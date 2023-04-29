@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Lookup {
+  id    Int     @id @default(autoincrement())
+  name  String? 
+  value String?   
+  is_active  Boolean?
+}
+
+model data_kelas {
+  id         Int     @id @default(autoincrement())
+  jurusan_id String? 
+  nama_kelas String?   
+  is_active  Boolean?
+}
+
+model data_siswa {
+  id           Int     @id @default(autoincrement())
+  nama_lengkap String? 
+  kelas_id     String? 
+  kode_akses   String? @unique  
+  is_active  Boolean?
+}
+
+model event {
+  id           Int     @id @default(autoincrement())
+  tahun_ajaran String? 
+  semester     String? 
+  nama_event   String?   
+  is_active  Boolean?
+}
+
+model link_ujian {
+  id         Int      @id @default(autoincrement())
+  event_id   String?  
+  jurusan_id String?  
+  mapel_id   String?  
+  link       String?  
+  is_active  Boolean?
+}
