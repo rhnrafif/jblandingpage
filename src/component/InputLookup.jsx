@@ -50,10 +50,10 @@ export default function InputLookup() {
               setIsModal(!isModal)
             }
         })
-        .catch((e)=>{
-          
+        .catch((err)=>{
+          alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
-    } catch (error) {}
+    } catch (error) {alert('Action Failed, Please try again');}
   }
     
 

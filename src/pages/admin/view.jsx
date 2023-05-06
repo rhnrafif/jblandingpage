@@ -106,10 +106,13 @@ export default function uas() {
       }
         await axios.post("/api/get/datasiswa", dataQuery)
         .then((e)=>{
+            
           setDataSiswaTabel(e.data)
           if(isDataSiswaTable == false){
               setIsDataSiswaTabel(true)
           }
+        }).catch((error)=>{
+            alert('Gagal memuat data, silahkan coba lagi')
         })
     }
 
@@ -140,6 +143,9 @@ export default function uas() {
         .then((e)=>{
             setDataLinkView(e.data)
             if(isEvent == false) handleMenu("isEvent")
+        })
+        .catch((error)=>{
+            alert('Data tidak ditemukan')
         })
     }
 

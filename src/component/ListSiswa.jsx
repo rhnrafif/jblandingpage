@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { utils, writeFile } from "xlsx"
 import moment from 'moment/moment';
+import {BsFillDice5Fill} from "react-icons/bs"
 
 
 export default function ListSiswa({dataSiswa}) {
@@ -80,6 +81,17 @@ export default function ListSiswa({dataSiswa}) {
                   </IconButton>
                 </Tooltip>
               </Col>
+              <Col css={{ d: "flex" }}>
+                <Tooltip
+                  content="Update Kode"
+                  color="primary"
+                  onClick={()=>{handleKode(user.id)}}
+                >
+                  <IconButton>
+                    <BsFillDice5Fill  />
+                  </IconButton>
+                </Tooltip>
+              </Col>
             </Row>
           );
         default:
@@ -105,7 +117,7 @@ export default function ListSiswa({dataSiswa}) {
                 setIsModal(true)
               })
             } catch (error) {
-              
+              alert('Action Failed, Please try again');
             }
       }
 
@@ -141,13 +153,15 @@ export default function ListSiswa({dataSiswa}) {
           setIsModal(false)
           window.location.reload()  
         })
+        .catch((err)=>{
+            alert(`Terjadi kesalahan, ${err.response.data.message}`)
+        })
       } catch (error) {
-        console.info(error)
+        alert('Action Failed, Please try again');
       }
     }
 
     const handleUpdateCode = async(e)=>{
-      console.info(e.data_siswa)
       let dataSiswaKode = []
       const dataArr = e.data_siswa;
       dataArr.forEach(element => {
@@ -160,11 +174,14 @@ export default function ListSiswa({dataSiswa}) {
         }
 
         try {
-        axios.post('/api/update/kodesiswa', {data : d})
-        .then((e)=>{
+          axios.post('/api/update/kodesiswa', {data : d})
+          .then((e)=>{
+            })
+          .catch((err)=>{
+              alert(`Terjadi kesalahan, ${err.response.data.message}`)
           })
         } catch (error) {
-          
+          alert('Action Failed, Please try again');
         }
       });
 
@@ -172,6 +189,27 @@ export default function ListSiswa({dataSiswa}) {
       window.location.reload() 
       
       
+    }
+
+    const handleKode = async(e)=>{
+      
+      const dataUserKode = {
+        id : e,
+        kode_akses : generateString(6)
+      }
+
+      try {
+          axios.post('/api/update/onesiswacode', {data : dataUserKode})
+          .then((e)=>{
+                alert('Berhasil update kode akses')
+                window.location.reload() 
+            })
+          .catch((err)=>{
+              alert(`Terjadi kesalahan, ${err.response.data.message}`)
+          })
+        } catch (error) {
+          alert('Action Failed, Please try again');
+        }
     }
 
     //hanlde Delete area
@@ -224,8 +262,8 @@ export default function ListSiswa({dataSiswa}) {
             Update All Kode Akses
           </Button>
         </div>
-        <Button auto bordered onPress={()=>{handleExcel(dataSiswa.data_siswa[0].kelas_id)}} >
-          Download Excel
+        <Button auto css={{height : '100%', display : 'flex', flexDirection : 'column'}} onPress={()=>{handleExcel(dataSiswa.data_siswa[0].kelas_id)}} >
+            <p className='mx-2'>Download Excel </p>
         </Button>
       </div>
     )}

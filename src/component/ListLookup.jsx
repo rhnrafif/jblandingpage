@@ -90,8 +90,11 @@ export default function ListLookup({dataLookup}) {
             setDataLookupEdit(e.data);
             setIsModal(true)
           })
+          .catch((err)=>{
+              alert(`Terjadi kesalahan, ${err.response.data.message}`)
+          })
         } catch (error) {
-          
+          alert('Action Failed, Please try again');
         }
       }
 
@@ -123,7 +126,11 @@ export default function ListLookup({dataLookup}) {
           setIsModal(false)
           window.location.reload()  
         })
+        .catch((err)=>{
+            alert(`Terjadi kesalahan, ${err.response.data.message}`)
+        })
       } catch (error) {
+        alert('Action Failed, Please try again');
       }
     }
 
@@ -145,7 +152,7 @@ export default function ListLookup({dataLookup}) {
           window.location.reload()  
         })
       } catch (error) {
-        
+        alert('Action Failed, Please try again');
       }
     }
 

@@ -13,7 +13,6 @@ export default async function handler(req, res){
                 is_active : true
             }
         })
-        console.info(dataInput.kode_akses.trim())
         const dataLink = await prisma.$queryRaw`
         select z.id, y.jur as jurusan, z.mp as mata_pelajaran, z.link as Link_ujian from (select id, value as jur from "Lookup" where name = 'Jurusan') y
         join (select q.id, p.value as mp, q.jurusan_id, q.link from (select value, id from "Lookup" where name = 'MataPelajaran') p 

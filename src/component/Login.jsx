@@ -64,7 +64,7 @@ export default function Login() {
             }
         })
     } catch (error) {
-        
+        alert('Action Failed, Please try again');
     }
   }
 

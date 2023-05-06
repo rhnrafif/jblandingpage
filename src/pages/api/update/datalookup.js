@@ -26,9 +26,9 @@ export default async function handler(req, res){
                 .then((e)=>{
                     res.status(201).json({message : "Berhasil Update"})
                 })
-            }else res.status(400).json({message : "Name or Value cannot be null"})
+            }else res.status(400).json({message : "Name/Value Lookup tidak boleh kosong"})
             
-        }else res.status(400).json({message : "Lookup Not Found"})
+        }else res.status(400).json({message : "Lookup tidak ditemukan"})
     } catch (error) {
         res.status(500).json({message : error})
     }

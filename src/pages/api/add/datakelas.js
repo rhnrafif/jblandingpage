@@ -23,9 +23,9 @@ export default async function handler(req, res){
                 .then((e)=>{
                     res.status(201).json({message : "Kelas Was Created"})
                 })
-            } else res.status(400).json({message : "Jurusan is Not Exist"})
+            } else res.status(404).json({message : "Jurusan tidak ditemukan"})
             
-        }else res.status(401).json({message : "Data Cannot be Null"})
+        }else res.status(400).json({message : "Nama Kelas / Jurusan tidak boleh kosong"})
     } catch (error) {
         res.status(500).json({message : error})
     }

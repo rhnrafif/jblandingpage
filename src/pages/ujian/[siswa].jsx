@@ -12,6 +12,7 @@ export default function HelloScreen({data}) {
     const route = useRouter()
     const [isUserLog, setIsUserLog] = useState(false)
     const [userData, setUserData] = useState({})
+    const [isError, setIsError] = useState(false)
 
     useEffect(()=>{
         const us = getCookie('dataUser')
@@ -22,8 +23,14 @@ export default function HelloScreen({data}) {
           if(userSession.data[0].nama_lengkap != 'ADMIN'){
             axios.post(`/api/get/datauser`, {kode : userSession.data[0].kode_akses})
             .then((e)=>{
-              setUserData(e.data.datauser)
-              setIsUserLog(true)
+
+              if(e.data.datauser.length == 0){
+                setIsError(true);
+                deleteCookie('dataUser');
+              }else{
+                setUserData(e.data.datauser)
+                setIsUserLog(true)
+              }
             })
           }else route.push('/')
         }
@@ -36,9 +43,20 @@ export default function HelloScreen({data}) {
   }
 
   return (
-    <>       
+    <>      
         <main className='min-w-full min-h-screen bg-slate-100 text-black' >
-          {(isUserLog) ? (
+          <>
+          {(isError) ? (
+            <div className="w-full h-screen flex flex-col justify-center items-center">
+                <img src={`${process.env.NEXT_PUBLIC_URL_NOT_FOUND}`} 
+                alt="page not found"
+                className="max-w-md"
+                />
+                <p className="text-2xl">Back to <a href="/" className="text-sky-500 font-semibold">Login Page</a></p>
+            </div>
+          ) : (
+            <>
+              {(isUserLog) ? (
             <>
                 <div className="w-full h-[60px] max-w-[980px] flex justify-between items-center mx-auto lg:border-b-2 lg:border-gray-700">
                     <div className="w-full flex justify-center">
@@ -90,14 +108,21 @@ export default function HelloScreen({data}) {
                     </div>
                 </div>
             </>
-          ) : (
-            <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
-                <p className="text-4xl font-bold">Page Not Allowed</p>
-                <p className="text-base">
-                    Mohon Login dahulu
-                </p>                    
-            </div>
+            ) : (
+              <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
+                  <img src={`${process.env.NEXT_PUBLIC_URL_NOT_ALLOWED}`} alt="page not allowed" 
+                  className="max-w-md"
+                  />
+                  <p className="text-2xl">
+                      Mohon <a href="/" className="text-sky-600 font-semibold">Login</a> dahulu
+                  </p>                    
+              </div>
+            )}
+            </>
           )}
+          
+          </>
+          
         </main>
         </>
   )

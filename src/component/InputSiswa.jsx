@@ -52,12 +52,10 @@ export default function InputSiswa({dataSiswa}) {
             setIsModal(!isModal)
           }
         })
-        .catch((e)=>{
-          
+        .catch((err)=>{
+          alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
-    } catch (error) {
-        console.log(error)
-    }
+    } catch (error) {alert('Action Failed, Please try again');}
   }
     
 

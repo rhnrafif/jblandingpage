@@ -87,8 +87,11 @@ export default function ListKelas({dataKelas}) {
             setDataKelasEdit(e.data);
             setIsModal(true)
           })
+          .catch((err)=>{
+            alert(`Terjadi kesalahan, ${err.response.data.message}`)
+          })
         } catch (error) {
-          
+          alert('Action Failed, Please try again');
         }
       }
 
@@ -114,8 +117,11 @@ export default function ListKelas({dataKelas}) {
           setIsModal(false)
           window.location.reload()  
         })
+        .catch((err)=>{
+            alert(`Terjadi kesalahan, ${err.response.data.message}`)
+        })
       } catch (error) {
-        console.info(error)
+        alert('Action Failed, Please try again');
       }
     }
 
@@ -137,7 +143,7 @@ export default function ListKelas({dataKelas}) {
           window.location.reload()  
         })
       } catch (error) {
-        
+        alert('Action Failed, Please try again');
       }
     }
 

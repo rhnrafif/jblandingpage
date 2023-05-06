@@ -16,7 +16,7 @@ export default async function handler(req, res){
             .then((response)=>{
                 res.status(201).json({message : "Berhasil Input Lookup"})
             })
-        }        
+        }else res.status(400).json({message : "Value Lookup tidak boleh kosong"})
     } catch (error) {
         res.status(500).json({message : error})
     }

@@ -50,8 +50,8 @@ export default async function handler(req, res){
                         res.status(201).json({message : "Berhasil Update"})
                     })
                 }
-            }else res.status(404).json({message : "Jurusan Not Found"})
-        }else res.status(400).json({message : "Kelas Not Found"})
+            }else res.status(404).json({message : "Jurusan tidak ditemukan"})
+        }else res.status(400).json({message : "Kelas tidak ditemukan"})
     } catch (error) {
         res.status(500).json({message : error})
     }

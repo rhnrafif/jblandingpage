@@ -65,11 +65,11 @@ export default function InputUAS({dataEvent}) {
             setIsModal(!isModal)
           }
         })
-        .catch((e)=>{
-          
+        .catch((err)=>{
+            alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
     } catch (error) {
-        console.log(error)
+        alert('Action Failed, Please try again');
     }
   }
     

@@ -27,22 +27,26 @@ export default async function handler(req, res){
             }
         })
         if(dataJurusan != null && dataEvent != null && dataMapel != null){
-            await prisma.link_ujian.update({
-                where : {
-                    id : dataInput.id
-                },
-                data : {
-                    event_id : dataEvent.id.toString(),
-                    jurusan_id : dataJurusan.id.toString(),
-                    mapel_id : dataMapel.id.toString(),
-                    link : dataInput.link,
-                    is_active : true
-                }
-            })
-            .then((e)=>{
-                res.status(201).json({message : "Link was updated"})
-            })
-        } else res.status(400).json({message : "Data is Not Exist"})
+            if(dataEvent != null){
+                if(dataMapel != null){
+                    await prisma.link_ujian.update({
+                        where : {
+                            id : dataInput.id
+                        },
+                        data : {
+                            event_id : dataEvent.id.toString(),
+                            jurusan_id : dataJurusan.id.toString(),
+                            mapel_id : dataMapel.id.toString(),
+                            link : dataInput.link,
+                            is_active : true
+                        }
+                    })
+                    .then((e)=>{
+                        res.status(201).json({message : "Link was updated"})
+                    })
+                } else res.status(404).json({message : "Mata Pelajaran tidak ditemukan"})
+            } else res.status(404).json({message : "Event tidak ditemukan"})
+        } else res.status(404).json({message : "Jurusan tidak ditemukan"})
         
     } catch (error) {
         res.status(500).json({message : error})

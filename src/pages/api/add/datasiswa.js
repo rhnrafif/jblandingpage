@@ -24,8 +24,8 @@ export default async function handler(req, res){
                 .then((response)=>{
                     res.status(201).json({message : "Data Siswa Was Create"})
                 })
-            }else res.status(404).json({message : "Kelas not found"})
-        }        
+            }else res.status(404).json({message : "Kelas tidak ditemukan"})
+        } else res.status(400).json({message : "Nama Lengkap tidak boleh kosong"})       
     } catch (error) {
         res.status(500).json({message : error})
     }
