@@ -4,30 +4,33 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res){
     try {
-        let dataInput = req.body;
+        let id = req.body.id;
         const dataLink = await prisma.link_ujian.findFirst({
             where : {
-                id : parseInt(dataInput.id)
-            },
+                id : id,
+                is_active : true
+            }
         })
-        if(dataLink.id != 0){
+
+        if(dataLink != null){
+
             await prisma.link_ujian.update({
                 where : {
-                    id : dataLink.id
+                    id : id
                 },
                 data : {
                     event_id : dataLink.event_id,
                     jurusan_id : dataLink.jurusan_id,
                     mapel_id : dataLink.mapel_id,
                     link : dataLink.link,
-                    status : true,
-                    is_active : false
+                    status : !dataLink.status,
+                    is_active : dataLink.is_active
                 }
+            }).then(()=>{
+                res.status(200).json({message : "Berhasil Ubah Status"})
             })
-            .then(()=>{
-                res.status(201).json({message : "Berhasil Hapus Data Kelas"})
-            })
-        }else res.status(401).json({message : "Data Cannot be Null"})
+        }else res.status(404).json({message : "Link Ujian tidak ditemukan"})
+        
     } catch (error) {
         res.status(500).json({message : error})
     }

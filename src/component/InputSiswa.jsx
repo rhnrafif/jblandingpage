@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {Dropdown, Input, Button, Modal, Text} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { SiswaInput } from './GlobalState/SiswaInputProvider';
+import { DisplaySiswa } from './GlobalState/DisplaySiswaProvider'
 
 export default function InputSiswa({dataSiswa}) {
+  
+    
+    //global state
+    const [dataSiswaInput, setDataSiswaInput] = useContext(SiswaInput);
+    const [isInputSiswa, setIsInputSiswa] = useContext(DisplaySiswa);
+
+    //cek data realtime
+    const [classname, setClassname] = useState('');
+    const [isRefresh, setIsRefresh] = useState(false);
 
     const {handleSubmit, register, watch, formState:{errors}} = useForm();
 
@@ -19,13 +30,42 @@ export default function InputSiswa({dataSiswa}) {
       route.push('/admin')
     }
 
-    //item dropdown
+    //item dropdown jurusan
+    const [selectedJurusan, setSelectedJurusan] = useState(["Pilih Jurusan"])
+    const selectedJurusanValue = useMemo(
+        () => Array.from(selectedJurusan).join(", ").replaceAll("_", " "),
+        [selectedJurusan]
+    )
 
+    //item dropdown kelas
+    const [dataKelas, setDataKelas] = useState([])
     const [selectedKelas, setSelectedKelas] = useState(["Pilih kelas"]);
     const selectedKelasValue = useMemo(
         () => Array.from(selectedKelas).join(", ").replaceAll("_", " "),
         [selectedKelas]
     );
+
+    const handleDataKelas = async(jurusan)=>{
+        await axios.post("/api/get/datakelas", {jurusan : jurusan}).then((e)=>{
+        setDataKelas(e.data.data_kelas)
+      }).catch((err)=>{alert('Mohon Coba Lagi')})
+    }
+
+
+    //hanlde display data siswa sblm di add
+    const handleDisplay = async(i)=>{
+      const dataQuery = {
+        value : i
+      }
+        await axios.post("/api/get/datasiswa", dataQuery)
+        .then((e)=>{
+          setDataSiswaInput(e.data)
+          setIsInputSiswa(true)
+        }).catch((error)=>{
+            alert('Gagal memuat data, silahkan coba lagi')
+        })
+    }
+
 
   const submitTest = async(e)=>{
 
@@ -49,7 +89,9 @@ export default function InputSiswa({dataSiswa}) {
         await axios.post(`/api/add/datasiswa`, dataInput)
         .then((e)=>{
           if(e.status == 201){
-            setIsModal(!isModal)
+            setIsModal(!isModal);
+            setClassname(e.data.nama_kelas);
+            setIsRefresh(true)
           }
         })
         .catch((err)=>{
@@ -76,6 +118,32 @@ export default function InputSiswa({dataSiswa}) {
                         />
 
                       <div className="flex flex-col gap-2 items-center">
+                          <p>Jurusan</p>
+                          <Dropdown
+                          >
+                              <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
+                                  {selectedJurusan}
+                              </Dropdown.Button>
+                              <Dropdown.Menu
+                                  aria-label="Single selection actions"
+                                  color="primary"
+                                  disallowEmptySelection
+                                  selectionMode="single"
+                                  selectedKeys={selectedJurusan}
+                                  onSelectionChange={setSelectedJurusan}
+                                  items={dataSiswa}
+                                  onAction={(i)=>{handleDataKelas(i)}}
+                              >
+                                  {(i)=>(
+                                      <Dropdown.Item key={i.value}>
+                                          {i.value}
+                                      </Dropdown.Item>
+                                  )}
+                              </Dropdown.Menu>
+                          </Dropdown>
+                      </div>
+
+                      <div className="flex flex-col gap-2 items-center">
                           <p>Kelas</p>
                           <Dropdown
                           >
@@ -89,7 +157,8 @@ export default function InputSiswa({dataSiswa}) {
                                   selectionMode="single"
                                   selectedKeys={selectedKelas}
                                   onSelectionChange={setSelectedKelas}
-                                  items={dataSiswa}
+                                  onAction={(i)=>{handleDisplay(i)}}
+                                  items={dataKelas}
                               >
                                   {(i)=>(
                                       <Dropdown.Item key={i.nama_kelas}>
@@ -101,16 +170,25 @@ export default function InputSiswa({dataSiswa}) {
                       </div>
                   </div>
                   <div className='flex gap-1 flex-col'>
-                    {errors?.nama_lengkap && <small className='text-red-500'>{ errors?.nama_lengkap.message}</small>}
+                    {errors?.nama_lengkap && <small style={{color : 'red'}}>{ errors?.nama_lengkap.message}</small>}
                   </div>
             </div>
             
-            <div>
-                <Button type="submit" bordered color="primary" auto>
+            <div className='mt-4'>
+                <Button type="submit"  color="primary" auto>
                 Submit
                 </Button>
             </div>
         </form>
+        {(isRefresh) && (
+          <>
+            <div className='w-fit ml-auto'>
+                <Button type="submit" flat size="sm"  color="primary" auto onClick={()=>{handleDisplay(classname)}}>
+                  Cek Data
+                </Button>
+            </div>
+          </>
+        )}
         <Modal
       closeButton
       open={isModal}

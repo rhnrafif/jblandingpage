@@ -35,6 +35,7 @@ export default async function handler(req, res){
                             jurusan_id : dataJurusan.id.toString(),
                             mapel_id : dataMapel.id.toString(),
                             link : dataInput.link,
+                            status : true,
                             is_active : true
                         }
                     })

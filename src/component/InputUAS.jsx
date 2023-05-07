@@ -105,7 +105,7 @@ export default function InputUAS({dataEvent}) {
                 </div>
 
                 <div className="flex flex-col gap-2 items-center">
-                    <p>Kelas</p>
+                    <p>Kelas / Jurusan</p>
                     <Dropdown>
                         <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
                             {selectedKelas}

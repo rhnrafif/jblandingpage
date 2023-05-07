@@ -47,5 +47,6 @@ model link_ujian {
   jurusan_id String?  
   mapel_id   String?  
   link       String?  
+  status     Boolean?
   is_active  Boolean?
 }

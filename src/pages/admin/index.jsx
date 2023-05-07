@@ -1,5 +1,5 @@
 import Link from "next/link"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import axios from "axios"
 import InputSiswa from "@/component/InputSiswa"
 import InputKelas from "@/component/inputKelas"
@@ -8,6 +8,10 @@ import InputUAS from "@/component/InputUAS"
 import Navigation from "@/component/Navigation"
 import {getCookie, getCookies, setCookie, removeCookie} from "cookies-next"
 import { useRouter } from "next/router"
+import { SiswaInput } from "@/component/GlobalState/SiswaInputProvider"
+import { DisplaySiswa } from "@/component/GlobalState/DisplaySiswaProvider"
+import ListUAS from "@/component/ListUAS"
+import ListSiswaInput from "@/component/ListSiswaInput"
 
 const env = process.env
 
@@ -17,6 +21,10 @@ export default function Index({data}){
     const route = useRouter()
     const [isUserLog, setIsUserLog] = useState(false)
     const [userData, setUserData] = useState({})
+
+    //global state
+    const [dataSiswaInput, setDataSiswaInput] = useContext(SiswaInput);
+    const [isInputSiswa, setIsInputSiswa] = useContext(DisplaySiswa)
 
     // state menu admin
     const [isSiswa, setIsSiswa] = useState(false);
@@ -58,6 +66,7 @@ export default function Index({data}){
                 setisKelas(false);
                 setIsEvent(false);
                 setInitial(false);
+                setIsInputSiswa(false);
                 break;
             case "isKelas":
                 setIsSiswa(false);
@@ -65,6 +74,7 @@ export default function Index({data}){
                 setisKelas(true);
                 setIsEvent(false);
                 setInitial(false);
+                setIsInputSiswa(false);
                 break;
             case "isEvent":
                 setIsSiswa(false);
@@ -72,6 +82,7 @@ export default function Index({data}){
                 setisKelas(false);
                 setIsEvent(true);
                 setInitial(false);
+                setIsInputSiswa(false);
                 break;
             default:
                 setIsSiswa(false);
@@ -79,13 +90,23 @@ export default function Index({data}){
                 setisKelas(false);
                 setIsEvent(false);
                 setInitial(true);
+                setIsInputSiswa(false);
                 break;
         }
     }
 
+    //handle data jurusan utk input siswa
+    const [dataJurusan, setDataJurusan] = useState([])
+    const handleDataJurusan = async()=>{
+        await axios.get("/api/get/datajurusan").then((e)=>{
+            setDataJurusan(e.data)
+            handleMenu("isSiswa")
+        }).catch((err)=>{alert('Mohon Coba Lagi')})
+    }
+
     return(
         <>       
-        <main className='min-w-full min-h-screen bg-slate-100 text-black' >
+        <main className='min-w-full min-h-screen bg-slate-100 text-black ' >
             {(isUserLog) ? (
                 <>
                 <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
@@ -102,14 +123,14 @@ export default function Index({data}){
                         <h1 className="text-2xl">Selamat Datang {userData.data[0].nama_lengkap}, Have a nice day !</h1>
                     </div>
                 )}                    
-                    <div className="w-full h-screen flex gap-4">
-                        <div className="text-black bg-slate-200 w-[40%] h-fit shadow-md rounded-md p-3 flex flex-col gap-4">
+                    <div className="w-full h-full flex gap-4">
+                        <div className="text-black bg-slate-200 w-[40%] h-[280px] shadow-md rounded-md p-3 flex flex-col gap-4">
                             <h2 className="text-center font-medium text-xl">Pilih Menu Admin </h2>
                             <div className="flex flex-wrap gap-3 justify-center text-white">
                                 <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isLookup")}}>
                                     <h2>Input Lookup</h2>
                                 </button>
-                                <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isSiswa")}}>
+                                <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={handleDataJurusan}>
                                     <h2>Input Data Siswa</h2>
                                 </button>
                                 <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isKelas")}}>
@@ -120,9 +141,9 @@ export default function Index({data}){
                                 </button>
                             </div>
                         </div>
-                        <div className=" bg-slate-200 w-[60%] h-fit shadow-md rounded-md p-3 ">
+                        <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 ">
                             {(isSiswa) && (
-                                <InputSiswa dataSiswa={data.dataKelas.data_kelas} />
+                                <InputSiswa dataSiswa={dataJurusan} />
                             )}
 
                             {(isKelas) && (
@@ -142,6 +163,11 @@ export default function Index({data}){
                             )}
                         </div>
                     </div>
+                    {(isInputSiswa) && (
+                        <div className="w-full max-w-[59%] ml-auto">
+                            <ListSiswaInput dataSiswa={dataSiswaInput} />
+                        </div>
+                    )}
                 </div>
                 </>
             ) : (

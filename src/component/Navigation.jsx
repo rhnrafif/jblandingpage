@@ -18,6 +18,7 @@ export default function Navigation() {
         <Link className="text-lg h-[40px] w-[120px] flex justify-center items-center rounded-md hover:bg-sky-600 hover:text-white" 
         href={'/admin/view'}>Data View</Link>
         <Button
+        flat
         auto
         onClick={handleLogout}
         >

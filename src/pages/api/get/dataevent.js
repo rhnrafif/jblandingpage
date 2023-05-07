@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res){
     try {
-        await prisma.event.findMany({
+        await prisma.event.findFirst({
             where : {
                 nama_event : "UAS",
                 is_active : true

@@ -12,6 +12,7 @@ export default function HelloScreen({data}) {
     const route = useRouter()
     const [isUserLog, setIsUserLog] = useState(false)
     const [userData, setUserData] = useState({})
+    const [userLink, setUserLink] = useState({})
     const [isError, setIsError] = useState(false)
 
     useEffect(()=>{
@@ -21,17 +22,13 @@ export default function HelloScreen({data}) {
         }else{
           const userSession = JSON.parse(us)
           if(userSession.data[0].nama_lengkap != 'ADMIN'){
-            axios.post(`/api/get/datauser`, {kode : userSession.data[0].kode_akses})
+            let kode = userSession.data[0].kode_akses.trim()
+            axios.post(`/api/get/datauser`, {kode : kode})
             .then((e)=>{
-
-              if(e.data.datauser.length == 0){
-                setIsError(true);
-                deleteCookie('dataUser');
-              }else{
-                setUserData(e.data.datauser)
-                setIsUserLog(true)
-              }
-            })
+              setUserLink(e.data.dataLinkUas)
+              setUserData(e.data.datauser)
+              setIsUserLog(true)
+            }).catch((error)=> {console.info(error)})
           }else route.push('/')
         }
     },[])
@@ -93,16 +90,25 @@ export default function HelloScreen({data}) {
                               </div>
                           </div>
                           <div className="w-[60%] flex flex-col items-center gap-3">
-                            <h2>Pilih Mata Pelajaran</h2>
-                            <div className="w-full max-w-[480px] flex flex-wrap gap-2 justify-center">
-                              {userData?.map((e)=>{
-                                return(
-                                  <Link href={e.link_ujian} target="_blank" className="w-fit h-[40px] px-2 bg-sky-700 text-white rounded text-base flex justify-center items-center" key={e.id}>
-                                    {e.mata_pelajaran}
-                                  </Link>
-                                )
-                              })}
-                            </div>
+                            {(userLink.length != 0) ? (
+                              <>
+                                  <h2>Pilih Mata Pelajaran</h2>
+                                  <div className="w-full max-w-[480px] flex flex-wrap gap-2 justify-center">
+                                    {userLink?.map((e)=>{
+                                      return(
+                                        <Link href={e.link_ujian} target="_blank" className="w-fit h-[40px] px-2 bg-sky-700 text-white rounded text-base flex justify-center items-center" key={e.id}>
+                                          {e.mata_pelajaran}
+                                        </Link>
+                                      )
+                                    })}
+                                  </div>
+                              </>
+                            ) : (
+                              <>
+                                  <h2>Link Ujian tidak tersedia</h2>
+                              </>
+                            )}
+                            
                           </div>
                         </div>
                     </div>

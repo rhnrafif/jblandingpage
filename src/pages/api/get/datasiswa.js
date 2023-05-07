@@ -18,6 +18,9 @@ export default async function handler(req, res){
                     where : {
                         kelas_id : kelasId.id.toString(),
                         is_active : true
+                    },
+                    orderBy : {
+                        nama_lengkap : 'asc'
                     }
                 })
                 .then((e)=>{

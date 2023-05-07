@@ -258,21 +258,21 @@ export default function ListSiswa({dataSiswa}) {
     {(dataSiswa.data_siswa.length != 0) && (
       <div className='w-full flex justify-between'>
         <div>
-          <Button auto bordered onPress={()=>{handleUpdateCode(dataSiswa)}}>
+          {/* <Button auto bordered onPress={()=>{handleUpdateCode(dataSiswa)}}>
             Update All Kode Akses
-          </Button>
+          </Button> */}
         </div>
-        <Button auto css={{height : '100%', display : 'flex', flexDirection : 'column'}} onPress={()=>{handleExcel(dataSiswa.data_siswa[0].kelas_id)}} >
+        <Button auto  size="sm" onPress={()=>{handleExcel(dataSiswa.data_siswa[0].kelas_id)}} >
             <p className='mx-2'>Download Excel </p>
         </Button>
       </div>
     )}
-    <div className='max-w-[760px]'>
+    <div className='w-full'>
           <Table
           aria-label="Example table with custom cells"
           css={{
             height: "auto",
-            width : "100%"
+            width : "760px"
 
           }}
           selectionMode="none"
@@ -297,6 +297,11 @@ export default function ListSiswa({dataSiswa}) {
                 </Table.Row>
               )}
             </Table.Body>
+            <Table.Pagination
+                
+                align="center"
+                rowsPerPage={10}
+            />
           </Table>
 
           {/* modal update area */}

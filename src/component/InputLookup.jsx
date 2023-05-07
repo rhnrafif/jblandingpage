@@ -63,7 +63,7 @@ export default function InputLookup() {
       <form action="" className="flex flex-col gap-5 items-center" onSubmit={handleSubmit(submitKelas)}>
         
         <div className="flex gap-5 items-start justify-between w-full">      
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col gap-2 items-center text-black">
                 <p>Lookup</p>
                 <Dropdown>
                     <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
@@ -87,18 +87,20 @@ export default function InputLookup() {
                 </Dropdown>
             </div>
             
-            <div className="flex flex-col gap-2 items-center justify-between w-full">
+            <div className="flex flex-col gap-2 items-center justify-between w-full ">
               <p>Value</p>
-              <Input clearable placeholder='Value' name="value_name" width="240px" color='primary' bordered id='inputLookup'
-              
-              {... register("value_name", {
-                required : {
-                  value : true,
-                  message : "Value harus diisi"
-                }
-              })}
-              />
-              {errors?.value_name && <small className='text-red-500'>{ errors?.value_name.message}</small>}                                        
+              <div className='flex flex-col items-start gap-1'>
+                <Input clearable placeholder='Value' name="value_name" width="240px" color='primary' bordered id='inputLookup'
+                
+                {... register("value_name", {
+                  required : {
+                    value : true,
+                    message : "Value harus diisi"
+                  }
+                })}
+                />
+                {(errors?.value_name )&& (<small style={{color : 'red'}}>{errors?.value_name.message}</small>)}                                        
+              </div>
           </div>
         </div>
         <div>

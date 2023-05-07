@@ -149,12 +149,12 @@ export default function ListKelas({dataKelas}) {
 
   return (
     <>
-    <div className='max-w-[760px]'>
+    <div className='w-full'>
           <Table
           aria-label="Example table with custom cells"
           css={{
             height: "auto",
-            width : "100%"
+            width : "760px"
 
           }}
           selectionMode="none"

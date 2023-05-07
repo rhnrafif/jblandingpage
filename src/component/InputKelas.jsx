@@ -4,6 +4,7 @@ import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { SiswaInput } from './GlobalState/SiswaInputProvider';
 
 export default function InputKelas({dataJurusan}) {
 
@@ -87,19 +88,22 @@ export default function InputKelas({dataJurusan}) {
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
-             <Input clearable label="Nama Kelas" name="nama_kelas" width="240px" placeholder='11 TBSM 2' id='nama_kelas'
-            
-            {... register("nama_kelas", {
-              required : {
-                value : true,
-                message : "Nama Kelas harus diisi"
-              }
-            })}
-            />
-            {errors?.nama_kelas && <small className='text-red-500'>{ errors?.nama_kelas.message}</small>}
+            <div className='flex flex-col gap-1 items-start'>
+              <p>Nama Kelas</p>
+              <Input clearable name="nama_kelas" width="240px" placeholder='11 TBSM 2' id='nama_kelas'
+              
+              {... register("nama_kelas", {
+                required : {
+                  value : true,
+                  message : "Nama Kelas harus diisi"
+                }
+              })}
+              />
+              {errors?.nama_kelas && <small style={{color : 'red'}}>{ errors?.nama_kelas.message}</small>}
+            </div>
           </div>
           <div>
-            <Button type="submit" bordered color="primary" auto>
+            <Button type="submit" color="primary" auto>
               Tambah Kelas
             </Button>
           </div>

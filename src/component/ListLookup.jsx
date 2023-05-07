@@ -158,12 +158,12 @@ export default function ListLookup({dataLookup}) {
 
   return (
     <>
-    <div className='max-w-[760px]'>
+    <div className='w-fit'>
           <Table
           aria-label="Example table with custom cells"
           css={{
             height: "auto",
-            width : "100%"
+            width : "760px"
 
           }}
           selectionMode="none"
@@ -188,6 +188,11 @@ export default function ListLookup({dataLookup}) {
                 </Table.Row>
               )}
             </Table.Body>
+            <Table.Pagination
+                
+                align="center"
+                rowsPerPage={10}
+            />
           </Table>
 
           {/* modal update area */}

@@ -10,7 +10,10 @@ import ListUAS from '@/component/ListUAS';
 import { useRouter } from 'next/router';
 import {getCookie} from "cookies-next"
 
-export default function uas() {
+//env
+const env = process.env
+
+export default function uas({data}) {
 
     //session or user area
     const route = useRouter()
@@ -82,19 +85,32 @@ export default function uas() {
         }
     }
 
-    //handle Data View
-    const [dataKelas, setDataKelas] = useState([])
-    const handleDataSiswa = async()=>{
-      await axios.get("/api/get/datakelas").then((e)=>{
-        setDataKelas(e.data.data_kelas)
-        handleMenu("isSiswa")
-      })
+    
+    //handle Data Siswa Area
+    const [dataJurusan, setDataJurusan] = useState([])
+    const handleDataJurusan = async()=>{
+        await axios.get("/api/get/datajurusan").then((e)=>{
+            setDataJurusan(e.data)
+            handleMenu("isSiswa")
+        }).catch((err)=>{alert('Mohon Coba Lagi')})
     }
 
-    //handle data siswa area
-    const [selectedKelas, setSelectedKelas] = useState(["Pilih kelas"]);
+    const [selectedJurusan, setSelectedJurusan] = useState(["Pilih Jurusan"])
+    const selectedJurusanValue = useMemo(
+        () => Array.from(selectedJurusan).join(", ").replaceAll("_", " "),
+        [selectedJurusan]
+    )
+
     const [dataSiswaTabel, setDataSiswaTabel] = useState([])
     const [isDataSiswaTable, setIsDataSiswaTabel] = useState(false)
+    const [dataKelas, setDataKelas] = useState([])
+    const handleDataSiswa = async(jurusan)=>{
+      await axios.post("/api/get/datakelas", {jurusan : jurusan}).then((e)=>{
+        setDataKelas(e.data.data_kelas)
+      }).catch((err)=>{alert('Mohon Coba Lagi')})
+    }
+
+    const [selectedKelas, setSelectedKelas] = useState(["Pilih kelas"]);
     const selectedKelasValue = useMemo(
         () => Array.from(selectedKelas).join(", ").replaceAll("_", " "),
         [selectedKelas]
@@ -115,6 +131,7 @@ export default function uas() {
             alert('Gagal memuat data, silahkan coba lagi')
         })
     }
+
 
     //handle Data Kelas area
     const [dataKelasView, setDataKelasView] = useState([])
@@ -137,12 +154,35 @@ export default function uas() {
     }
 
     //hanlde Data Link Area
+
+    const [isLinkTable, setIsLinkTable] = useState(false)
+    const [Jurusan, setJurusan] = useState([])
+    const handleJurusanLink = async()=>{
+        await axios.get("/api/get/datajurusan").then((e)=>{
+            setJurusan(e.data)
+            handleMenu("isEvent")
+        }).catch((err)=>{alert('Mohon Coba Lagi')})
+    }
+
+    const [selJurusan, setSelJurusan] = useState(["Pilih Jurusan"])
+    const selJurusanValue = useMemo(
+        () => Array.from(selJurusan).join(", ").replaceAll("_", " "),
+        [selJurusan]
+    )
+
     const [dataLinkView, setDataLinkView] = useState([])
-    const handleDataLink = async()=>{
-        await axios.post('/api/get/datalink', {tahun : "2022/2023", semester : "GENAP", event : "UAS", kode_akses : userData.kode_akses.trim()})
+    const handleDataLink = async(i)=>{
+        const dataQuery = {
+            tahun : data.dataEvents.tahun_ajaran, 
+            semester : data.dataEvents.semester, 
+            event : data.dataEvents.nama_event, 
+            kode_akses : userData.kode_akses.trim(),
+            jurusan : i
+        }
+        await axios.post('/api/get/datalink', dataQuery )
         .then((e)=>{
             setDataLinkView(e.data)
-            if(isEvent == false) handleMenu("isEvent")
+            setIsLinkTable(true)
         })
         .catch((error)=>{
             alert('Data tidak ditemukan')
@@ -169,28 +209,52 @@ export default function uas() {
                         <h1 className="text-2xl">Selamat Datang Admin, Have a nice day !</h1>
                     </div>
                     )}
-                    <div className="w-full h-screen flex flex-col gap-4">
+                    <div className="w-full min-h-screen flex flex-col gap-4 mb-5">
                         <div className="text-black w-full h-fit p-3 flex flex-col gap-4">
                             <h2 className="text-center font-medium text-xl">Pilih Data </h2>
                             <div className="flex flex-wrap gap-3 justify-center items-center text-white">
                                 <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataLookup}>
                                     <h2> Lookup</h2>
                                 </button>
-                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataSiswa}>
+                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataJurusan}>
                                     <h2>Data Siswa</h2>
                                 </button>
                                 <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataKelas}>
                                     <h2>Kelas</h2>
                                 </button>
-                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataLink}>
+                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleJurusanLink}>
                                     <h2>Link UAS</h2>
                                 </button>
                             </div>
                         </div>
-                        <div className="text-black bg-slate-200 w-full h-fit shadow-md rounded-md p-3 ">
+                        <div className="text-black bg-slate-200 w-[90%] mx-auto h-fit shadow-md rounded-md p-3 ">
                             {(isSiswa) && (
                                 <>
                                 <div className='flex flex-row justify-center items-center gap-4' >
+                                    <div className="flex flex-row gap-2 justify-center items-center">
+                                        <p>Jurusan</p>
+                                        <Dropdown>
+                                            <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
+                                                {selectedJurusan}
+                                            </Dropdown.Button>
+                                            <Dropdown.Menu
+                                                aria-label="Single selection actions"
+                                                color="primary"
+                                                disallowEmptySelection
+                                                selectionMode="single"
+                                                selectedKeys={selectedJurusan}
+                                                onSelectionChange={setSelectedJurusan}
+                                                items={dataJurusan}
+                                                onAction={(i)=>{handleDataSiswa(i)}}
+                                            >
+                                                {(i)=>(
+                                                    <Dropdown.Item key={i.value}>
+                                                        {i.value}
+                                                    </Dropdown.Item>
+                                                )}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
                                     <div className="flex flex-row gap-2 justify-center items-center">
                                         <p>Kelas</p>
                                         <Dropdown>
@@ -221,11 +285,12 @@ export default function uas() {
                                     </div>
                                 </div>
                                 {(isDataSiswaTable) && (
-                                    <div className='flex flex-col items-center mt-5'>
-                                        <div>
+                                    <div className='flex flex-col items-center mt-5 -mb-2'>
+                                        <div className='flex flex-col justify-center items-center gap-1'>
                                             <p className='font-semibold'>DATA SISWA</p>
+                                            <p>{dataSiswaTabel.nama_kelas}</p>
                                         </div>
-                                        <div className='w-full'>
+                                        <div className='w-fit'>
                                             <ListSiswa dataSiswa={dataSiswaTabel} />
                                         </div>
                                     </div>                                    
@@ -238,7 +303,7 @@ export default function uas() {
                                     <div>
                                         <p className='font-semibold'>DATA KELAS</p>
                                     </div>
-                                    <div className='w-full'>
+                                    <div className='w-fit'>
                                         <ListKelas dataKelas={dataKelasView}  />
                                     </div>
                                 </div>
@@ -249,21 +314,55 @@ export default function uas() {
                                     <div>
                                         <p className='font-semibold'>DATA LOOKUP</p>
                                     </div>
-                                    <div className='w-full'>
+                                    <div className='w-fit'>
                                         <ListLookup dataLookup={dataLookupView} />
                                     </div>
                                 </div>
                             )}
 
                             {(isEvent) && (
-                                <div className='flex flex-col items-center'>
-                                    <div>
-                                        <p className='font-semibold'>DAFTAR LINK UAS</p>
+                                <>
+                                    <div className="flex flex-row gap-2 justify-center items-center mr-auto mb-4">
+                                        <p>Jurusan</p>
+                                        <Dropdown>
+                                            <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
+                                                {selJurusan}
+                                            </Dropdown.Button>
+                                            <Dropdown.Menu
+                                                aria-label="Single selection actions"
+                                                color="primary"
+                                                disallowEmptySelection
+                                                selectionMode="single"
+                                                selectedKeys={selJurusan}
+                                                onSelectionChange={setSelJurusan}
+                                                items={Jurusan}
+                                                onAction={(i)=>{handleDataLink(i)}}
+                                            >
+                                                {(i)=>(
+                                                    <Dropdown.Item key={i.value}>
+                                                        {i.value}
+                                                    </Dropdown.Item>
+                                                )}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
                                     </div>
-                                    <div className='w-full'>
-                                        <ListUAS dataLink={dataLinkView} />
+                                        
+                                    <div className='flex flex-col items-center'>
+                                        {(isLinkTable) && (
+                                            <>
+                                                <div className='w-full flex flex-col justify-center items-center gap-3'>
+                                                    <div className='flex flex-col justify-center items-center'>
+                                                        <p className='font-semibold'>DAFTAR LINK UAS</p>
+                                                        <p className='font-semibold text-lg'>{selJurusan}</p>
+                                                    </div>
+                                                    <div className='w-fit'>
+                                                        <ListUAS dataLink={dataLinkView} />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
-                                </div>
+                                </>
                             )}
 
                             {(initial) && (
@@ -284,4 +383,17 @@ export default function uas() {
         </main>
         </>
   )
+}
+
+export async function getServerSideProps(ctx){
+    const dataEvents = await axios.get(`${env.WEBURL}/api/get/dataevent`); 
+
+    const resultData = {
+        dataEvents : dataEvents.data
+    }
+    return{
+        props :{
+            data : resultData
+        }
+    }
 }

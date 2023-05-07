@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import {useForm} from "react-hook-form"
-import { Table, Row, Col, Tooltip, User, Text, Modal, Button, Input, Dropdown } from "@nextui-org/react";
+import { Table, Row, Col, Tooltip, User, Text, Modal, Button, Input, Dropdown, Switch } from "@nextui-org/react";
 import { IconButton } from '@/component/TableComponent/IconButton';
 import { EyeIcon } from "@/component/TableComponent/EyeIcon";
 import { EditIcon } from "@/component/TableComponent/EditIcon";
@@ -12,10 +12,19 @@ export default function ListUAS({dataLink}) {
 
   const route = useRouter();
 
+  const hanldeSwith = async(id, status)=>{
+    await axios.post("/api/update/switchlinkstatus", {id : id})
+    .then((e)=>{
+      alert('Berhasil Ubah Status')
+      route.push("/admin/view")
+    }).catch((err)=>{alert(`Terjadi kesalahan, ${err.message}`); window.location.reload()})
+  }
+
   //data
     const columns = [
     { name: "MATA PELAJARAN", uid: "mata_pelajaran" },
     { name: "KELAS / JURUSAN", uid: "jurusan" },
+    { name : "STATUS", uid : "status_aktif"},
     { name: "LINK", uid: "link_ujian" },
     { name: "ACTIONS", uid: "actions" },
     ];
@@ -49,9 +58,18 @@ export default function ListUAS({dataLink}) {
           return (
             <Col>
               <Row>
-                <Text size={14} css={{ tt: "capitalize", maxWidth:"380px" }}>
+                <Text size={14} css={{ tt: "capitalize", maxWidth:"320px" }}>
                   {cellValue}
                 </Text>
+              </Row>
+            </Col>
+          );
+        
+        case "status_aktif":
+          return (
+            <Col>
+              <Row>
+                <Switch size="sm" color="primary" bordered checked={cellValue} onChange={()=>{hanldeSwith(user.id)}} />
               </Row>
             </Col>
           );
@@ -190,12 +208,12 @@ export default function ListUAS({dataLink}) {
 
   return (
     <>
-    <div className='max-w-[760px]'>
+    <div className='w-full'>
           <Table
           aria-label="Example table with custom cells"
           css={{
             height: "auto",
-            width : "100%"
+            width : "920px"
 
           }}
           selectionMode="none"
