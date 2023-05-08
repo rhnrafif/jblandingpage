@@ -172,17 +172,21 @@ export default function uas({data}) {
 
     const [dataLinkView, setDataLinkView] = useState([])
     const handleDataLink = async(i)=>{
+
         const dataQuery = {
-            tahun : data.dataEvents.tahun_ajaran, 
-            semester : data.dataEvents.semester, 
-            event : data.dataEvents.nama_event, 
+            tahun : (data.dataEvents == null) ? '' : data.dataEvents.tahun_ajaran, 
+            semester : (data.dataEvents == null) ? '' : data.dataEvents.semester, 
+            event : (data.dataEvents == null) ? '' : data.dataEvents.nama_event, 
             kode_akses : userData.kode_akses.trim(),
             jurusan : i
         }
+
         await axios.post('/api/get/datalink', dataQuery )
         .then((e)=>{
-            setDataLinkView(e.data)
-            setIsLinkTable(true)
+            if(e.data.dataLink != null){
+                setDataLinkView(e.data)
+                setIsLinkTable(true)
+            }else alert('Event tidak terdaftar')
         })
         .catch((error)=>{
             alert('Data tidak ditemukan')

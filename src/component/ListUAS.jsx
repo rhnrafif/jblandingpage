@@ -53,17 +53,6 @@ export default function ListUAS({dataLink}) {
               </Row>
             </Col>
           );
-
-        case "link_ujian":
-          return (
-            <Col>
-              <Row>
-                <Text size={14} css={{ tt: "capitalize", maxWidth:"320px" }}>
-                  {cellValue}
-                </Text>
-              </Row>
-            </Col>
-          );
         
         case "status_aktif":
           return (
@@ -74,9 +63,20 @@ export default function ListUAS({dataLink}) {
             </Col>
           );
 
+        case "link_ujian":
+          return (
+            <Col>
+              <Row>
+                <Text size={14} css={{ tt: "capitalize", maxWidth:"280px" }}>
+                  {cellValue}
+                </Text>
+              </Row>
+            </Col>
+          );
+
         case "actions":
           return (
-            <Row justify="center" align="center" >
+            <Row justify="center" align="center" css={{marginLeft : "16px"}} >
               <Col css={{ d: "flex" }}>
                 <Tooltip content="Edit Link">
                   <IconButton onClick={()=>{handleEdit(user.id)}}>

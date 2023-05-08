@@ -141,7 +141,7 @@ export default function Index({data}){
                                 </button>
                             </div>
                         </div>
-                        <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 ">
+                        <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center">
                             {(isSiswa) && (
                                 <InputSiswa dataSiswa={dataJurusan} />
                             )}
@@ -159,7 +159,9 @@ export default function Index({data}){
                             )}
 
                             {(initial) && (
-                                <h2 className="text-center">Welcome to JayaBuana </h2>
+                                <div className="w-fit h-fit my-auto justify-center items-center">
+                                    <h2 className="text-center">Welcome to JayaBuana </h2>
+                                </div>
                             )}
                         </div>
                     </div>

@@ -88,7 +88,7 @@ export default function InputKelas({dataJurusan}) {
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
-            <div className='flex flex-col gap-1 items-start'>
+            <div className='flex flex-col gap-2 items-start'>
               <p>Nama Kelas</p>
               <Input clearable name="nama_kelas" width="240px" placeholder='11 TBSM 2' id='nama_kelas'
               
