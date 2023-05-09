@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Navigation from '@/component/Navigation'
 import {useState, useMemo, useEffect} from "react"
-import {  Dropdown, Button } from "@nextui-org/react";
+import {  Dropdown, Button, Modal, Loading } from "@nextui-org/react";
 import ListSiswa from '@/component/ListSiswa';
 import axios from 'axios';
 import ListKelas from '@/component/ListKelas';
@@ -9,6 +9,7 @@ import ListLookup from '@/component/ListLookup';
 import ListUAS from '@/component/ListUAS';
 import { useRouter } from 'next/router';
 import {getCookie} from "cookies-next"
+import { LoadingState } from '@/component/GlobalState/IsLoadingProvider';
 
 //env
 const env = process.env
@@ -20,6 +21,9 @@ export default function uas({data}) {
     const [isUserLog, setIsUserLog] = useState(false)
     const [userData, setUserData] = useState({})
 
+    //global state
+    const [isLoading, setIsLoading] = useContext(LoadingState)
+
     useEffect(()=>{
         const us = getCookie('dataUser')
         if(us == undefined){
@@ -28,6 +32,7 @@ export default function uas({data}) {
             const userSession = JSON.parse(us)
             if(userSession.data[0].nama_lengkap == 'ADMIN'){
                 setUserData(userSession.data[0])
+                setIsLoading(false)
                 setIsUserLog(true)
             }else{
                 route.push('/')
@@ -197,192 +202,208 @@ export default function uas({data}) {
   return (
     <>       
         <main className='min-w-full min-h-screen bg-slate-100 text-black' >
-            {(isUserLog) ? (
+            {(isLoading == false) ? (
                 <>
-                <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
-                    <div className="w-[120px]">
-                        <h2 className="text-xl font-medium">Jaya Buana</h2>
-                    </div>
-                    <div className="flex gap-2 w-fit">
-                        <Navigation />
-                    </div>
-                </div>
-                <div className="container relative min-h-screen flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
-                    {(initial) && (
-                    <div>
-                        <h1 className="text-2xl">Selamat Datang Admin, Have a nice day !</h1>
-                    </div>
-                    )}
-                    <div className="w-full min-h-screen flex flex-col gap-4 mb-5">
-                        <div className="text-black w-full h-fit p-3 flex flex-col gap-4">
-                            <h2 className="text-center font-medium text-xl">Pilih Data </h2>
-                            <div className="flex flex-wrap gap-3 justify-center items-center text-white">
-                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataLookup}>
-                                    <h2> Lookup</h2>
-                                </button>
-                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataJurusan}>
-                                    <h2>Data Siswa</h2>
-                                </button>
-                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataKelas}>
-                                    <h2>Kelas</h2>
-                                </button>
-                                <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleJurusanLink}>
-                                    <h2>Link UAS</h2>
-                                </button>
+                    {(isUserLog) ? (
+                        <>
+                        <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
+                            <div className="w-[120px]">
+                                <h2 className="text-xl font-medium">Jaya Buana</h2>
+                            </div>
+                            <div className="flex gap-2 w-fit">
+                                <Navigation />
                             </div>
                         </div>
-                        <div className="text-black bg-slate-200 w-[90%] mx-auto h-fit shadow-md rounded-md p-3 ">
-                            {(isSiswa) && (
-                                <>
-                                <div className='flex flex-row justify-center items-center gap-4' >
-                                    <div className="flex flex-row gap-2 justify-center items-center">
-                                        <p>Jurusan</p>
-                                        <Dropdown>
-                                            <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
-                                                {selectedJurusan}
-                                            </Dropdown.Button>
-                                            <Dropdown.Menu
-                                                aria-label="Single selection actions"
-                                                color="primary"
-                                                disallowEmptySelection
-                                                selectionMode="single"
-                                                selectedKeys={selectedJurusan}
-                                                onSelectionChange={setSelectedJurusan}
-                                                items={dataJurusan}
-                                                onAction={(i)=>{handleDataSiswa(i)}}
-                                            >
-                                                {(i)=>(
-                                                    <Dropdown.Item key={i.value}>
-                                                        {i.value}
-                                                    </Dropdown.Item>
-                                                )}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                    <div className="flex flex-row gap-2 justify-center items-center">
-                                        <p>Kelas</p>
-                                        <Dropdown>
-                                            <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
-                                                {selectedKelas}
-                                            </Dropdown.Button>
-                                            <Dropdown.Menu
-                                                aria-label="Single selection actions"
-                                                color="primary"
-                                                disallowEmptySelection
-                                                selectionMode="single"
-                                                selectedKeys={selectedKelas}
-                                                onSelectionChange={setSelectedKelas}
-                                                items={dataKelas}
-                                            >
-                                                {(i)=>(
-                                                    <Dropdown.Item key={i.nama_kelas}>
-                                                        {i.nama_kelas}
-                                                    </Dropdown.Item>
-                                                )}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                    <div>
-                                    <Button type="submit" color="primary" onPress={handleDataPerkelas} auto>
-                                    Tampilkan
-                                    </Button>
-                                    </div>
-                                </div>
-                                {(isDataSiswaTable) && (
-                                    <div className='flex flex-col items-center mt-5 -mb-2'>
-                                        <div className='flex flex-col justify-center items-center gap-1'>
-                                            <p className='font-semibold'>DATA SISWA</p>
-                                            <p>{dataSiswaTabel.nama_kelas}</p>
-                                        </div>
-                                        <div className='w-fit'>
-                                            <ListSiswa dataSiswa={dataSiswaTabel} />
-                                        </div>
-                                    </div>                                    
-                                )}
-                                </>
-                            )}
-
-                            {(isKelas) && (
-                                <div className='flex flex-col items-center'>
-                                    <div>
-                                        <p className='font-semibold'>DATA KELAS</p>
-                                    </div>
-                                    <div className='w-fit'>
-                                        <ListKelas dataKelas={dataKelasView}  />
-                                    </div>
-                                </div>
-                            )}
-
-                            {(isLookup) && (
-                                <div className='flex flex-col items-center'>
-                                    <div>
-                                        <p className='font-semibold'>DATA LOOKUP</p>
-                                    </div>
-                                    <div className='w-fit'>
-                                        <ListLookup dataLookup={dataLookupView} />
-                                    </div>
-                                </div>
-                            )}
-
-                            {(isEvent) && (
-                                <>
-                                    <div className="flex flex-row gap-2 justify-center items-center mr-auto mb-4">
-                                        <p>Jurusan</p>
-                                        <Dropdown>
-                                            <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
-                                                {selJurusan}
-                                            </Dropdown.Button>
-                                            <Dropdown.Menu
-                                                aria-label="Single selection actions"
-                                                color="primary"
-                                                disallowEmptySelection
-                                                selectionMode="single"
-                                                selectedKeys={selJurusan}
-                                                onSelectionChange={setSelJurusan}
-                                                items={Jurusan}
-                                                onAction={(i)=>{handleDataLink(i)}}
-                                            >
-                                                {(i)=>(
-                                                    <Dropdown.Item key={i.value}>
-                                                        {i.value}
-                                                    </Dropdown.Item>
-                                                )}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                        
-                                    <div className='flex flex-col items-center'>
-                                        {(isLinkTable) && (
-                                            <>
-                                                <div className='w-full flex flex-col justify-center items-center gap-3'>
-                                                    <div className='flex flex-col justify-center items-center'>
-                                                        <p className='font-semibold'>DAFTAR LINK UAS</p>
-                                                        <p className='font-semibold text-lg'>{selJurusan}</p>
-                                                    </div>
-                                                    <div className='w-fit'>
-                                                        <ListUAS dataLink={dataLinkView} />
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                </>
-                            )}
-
+                        <div className="container relative min-h-screen flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
                             {(initial) && (
-                                <h2 className="text-center">Welcome to JayaBuana </h2>
+                            <div>
+                                <h1 className="text-2xl">Selamat Datang Admin, Have a nice day !</h1>
+                            </div>
                             )}
+                            <div className="w-full min-h-screen flex flex-col gap-4 mb-5">
+                                <div className="text-black w-full h-fit p-3 flex flex-col gap-4">
+                                    <h2 className="text-center font-medium text-xl">Pilih Data </h2>
+                                    <div className="flex flex-wrap gap-3 justify-center items-center text-white">
+                                        <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataLookup}>
+                                            <h2> Lookup</h2>
+                                        </button>
+                                        <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataJurusan}>
+                                            <h2>Data Siswa</h2>
+                                        </button>
+                                        <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleDataKelas}>
+                                            <h2>Kelas</h2>
+                                        </button>
+                                        <button className="p-4 w-[175px] h-[40px] bg-sky-600 rounded-md flex justify-center items-center" onClick={handleJurusanLink}>
+                                            <h2>Link UAS</h2>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="text-black bg-slate-200 w-[90%] mx-auto h-fit shadow-md rounded-md p-3 ">
+                                    {(isSiswa) && (
+                                        <>
+                                        <div className='flex flex-row justify-center items-center gap-4' >
+                                            <div className="flex flex-row gap-2 justify-center items-center">
+                                                <p>Jurusan</p>
+                                                <Dropdown>
+                                                    <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
+                                                        {selectedJurusan}
+                                                    </Dropdown.Button>
+                                                    <Dropdown.Menu
+                                                        aria-label="Single selection actions"
+                                                        color="primary"
+                                                        disallowEmptySelection
+                                                        selectionMode="single"
+                                                        selectedKeys={selectedJurusan}
+                                                        onSelectionChange={setSelectedJurusan}
+                                                        items={dataJurusan}
+                                                        onAction={(i)=>{handleDataSiswa(i)}}
+                                                    >
+                                                        {(i)=>(
+                                                            <Dropdown.Item key={i.value}>
+                                                                {i.value}
+                                                            </Dropdown.Item>
+                                                        )}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            </div>
+                                            <div className="flex flex-row gap-2 justify-center items-center">
+                                                <p>Kelas</p>
+                                                <Dropdown>
+                                                    <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
+                                                        {selectedKelas}
+                                                    </Dropdown.Button>
+                                                    <Dropdown.Menu
+                                                        aria-label="Single selection actions"
+                                                        color="primary"
+                                                        disallowEmptySelection
+                                                        selectionMode="single"
+                                                        selectedKeys={selectedKelas}
+                                                        onSelectionChange={setSelectedKelas}
+                                                        items={dataKelas}
+                                                    >
+                                                        {(i)=>(
+                                                            <Dropdown.Item key={i.nama_kelas}>
+                                                                {i.nama_kelas}
+                                                            </Dropdown.Item>
+                                                        )}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            </div>
+                                            <div>
+                                            <Button type="submit" color="primary" onPress={handleDataPerkelas} auto>
+                                            Tampilkan
+                                            </Button>
+                                            </div>
+                                        </div>
+                                        {(isDataSiswaTable) && (
+                                            <div className='flex flex-col items-center mt-5 -mb-2'>
+                                                <div className='flex flex-col justify-center items-center gap-1'>
+                                                    <p className='font-semibold'>DATA SISWA</p>
+                                                    <p>{dataSiswaTabel.nama_kelas}</p>
+                                                </div>
+                                                <div className='w-fit'>
+                                                    <ListSiswa dataSiswa={dataSiswaTabel} />
+                                                </div>
+                                            </div>                                    
+                                        )}
+                                        </>
+                                    )}
+        
+                                    {(isKelas) && (
+                                        <div className='flex flex-col items-center'>
+                                            <div>
+                                                <p className='font-semibold'>DATA KELAS</p>
+                                            </div>
+                                            <div className='w-fit'>
+                                                <ListKelas dataKelas={dataKelasView}  />
+                                            </div>
+                                        </div>
+                                    )}
+        
+                                    {(isLookup) && (
+                                        <div className='flex flex-col items-center'>
+                                            <div>
+                                                <p className='font-semibold'>DATA LOOKUP</p>
+                                            </div>
+                                            <div className='w-fit'>
+                                                <ListLookup dataLookup={dataLookupView} />
+                                            </div>
+                                        </div>
+                                    )}
+        
+                                    {(isEvent) && (
+                                        <>
+                                            <div className="flex flex-row gap-2 justify-center items-center mr-auto mb-4">
+                                                <p>Jurusan</p>
+                                                <Dropdown>
+                                                    <Dropdown.Button color="primary" ghost css={{ tt: "capitalize" }}>
+                                                        {selJurusan}
+                                                    </Dropdown.Button>
+                                                    <Dropdown.Menu
+                                                        aria-label="Single selection actions"
+                                                        color="primary"
+                                                        disallowEmptySelection
+                                                        selectionMode="single"
+                                                        selectedKeys={selJurusan}
+                                                        onSelectionChange={setSelJurusan}
+                                                        items={Jurusan}
+                                                        onAction={(i)=>{handleDataLink(i)}}
+                                                    >
+                                                        {(i)=>(
+                                                            <Dropdown.Item key={i.value}>
+                                                                {i.value}
+                                                            </Dropdown.Item>
+                                                        )}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            </div>
+                                                
+                                            <div className='flex flex-col items-center'>
+                                                {(isLinkTable) && (
+                                                    <>
+                                                        <div className='w-full flex flex-col justify-center items-center gap-3'>
+                                                            <div className='flex flex-col justify-center items-center'>
+                                                                <p className='font-semibold'>DAFTAR LINK UAS</p>
+                                                                <p className='font-semibold text-lg'>{selJurusan}</p>
+                                                            </div>
+                                                            <div className='w-fit'>
+                                                                <ListUAS dataLink={dataLinkView} />
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+        
+                                    {(initial) && (
+                                        <h2 className="text-center">Welcome to JayaBuana </h2>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        </>
+                    ) : (
+                        <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
+                            <p className="text-4xl font-bold">Page Not Allowed</p>
+                            <p className="text-base">
+                                Mohon Login dahulu
+                            </p>                    
+                        </div>
+                    )}
                 </>
             ) : (
-                <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
-                    <p className="text-4xl font-bold">Page Not Allowed</p>
-                    <p className="text-base">
-                        Mohon Login dahulu
-                    </p>                    
-                </div>
+                <>
+                    <Modal 
+                    width='120px'
+                    aria-labelledby="modal-title"
+                    open={isLoading}
+                    >
+                        <Modal.Body>
+                            <Loading />
+                        </Modal.Body>
+                    </Modal>
+                </>
             )}
         </main>
         </>

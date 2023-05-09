@@ -1,16 +1,18 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {Input, Button, Loading, Modal} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import axios from 'axios';
 import {setCookie, getCookie} from "cookies-next";
 import { useRouter} from "next/router";
+import { LoadingState } from './GlobalState/IsLoadingProvider';
 
 export default function Login() {
 
     //router
     const router = useRouter();
 
-    const [isLoading, setIsLoading] = useState(false)
+    //global state
+    const [isLoading, setIsLoading] = useContext(LoadingState)
 
     useEffect(()=>{
         const us = getCookie('dataUser')
@@ -55,12 +57,10 @@ export default function Login() {
                 if(res.data.data.length != 0){
                     if(res.data.data[0].nama_lengkap == "ADMIN"){
                         setCookie('dataUser', res.data)
-                        setIsLoading(!isLoading)
                         router.push('/admin')
                     }else{
                         let url = res.data.data[0].kode_akses.trim()
                         setCookie('dataUser', res.data)
-                        setIsLoading(!isLoading)
                         router.push(`/ujian/${url}`)
                     }
                 }else{

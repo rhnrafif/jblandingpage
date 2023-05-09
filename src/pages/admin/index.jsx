@@ -10,8 +10,9 @@ import {getCookie, getCookies, setCookie, removeCookie} from "cookies-next"
 import { useRouter } from "next/router"
 import { SiswaInput } from "@/component/GlobalState/SiswaInputProvider"
 import { DisplaySiswa } from "@/component/GlobalState/DisplaySiswaProvider"
-import ListUAS from "@/component/ListUAS"
+import {Modal, Loading} from "@nextui-org/react"
 import ListSiswaInput from "@/component/ListSiswaInput"
+import { LoadingState } from "@/component/GlobalState/IsLoadingProvider"
 
 const env = process.env
 
@@ -24,7 +25,8 @@ export default function Index({data}){
 
     //global state
     const [dataSiswaInput, setDataSiswaInput] = useContext(SiswaInput);
-    const [isInputSiswa, setIsInputSiswa] = useContext(DisplaySiswa)
+    const [isInputSiswa, setIsInputSiswa] = useContext(DisplaySiswa);
+    const [isLoading, setIsLoading] = useContext(LoadingState)
 
     // state menu admin
     const [isSiswa, setIsSiswa] = useState(false);
@@ -41,6 +43,7 @@ export default function Index({data}){
             const userSession = JSON.parse(us)
             if(userSession.data[0].nama_lengkap == 'ADMIN'){
                 setUserData(userSession)
+                setIsLoading(false)
                 setIsUserLog(true)
             }else{
                 route.push('/')
@@ -107,78 +110,96 @@ export default function Index({data}){
     return(
         <>       
         <main className='min-w-full min-h-screen bg-slate-100 text-black ' >
-            {(isUserLog) ? (
+            {(isLoading == false) ? (
                 <>
-                <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
-                    <div className="w-[120px]">
-                        <h2 className="text-xl font-medium">Jaya Buana</h2>
-                    </div>
-                    <div className="flex gap-2 w-fit">
-                        <Navigation />
-                    </div>
-                </div>
-               <div className="container relative min-h-screen flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
-                {(initial) && (
-                    <div>
-                        <h1 className="text-2xl">Selamat Datang {userData.data[0].nama_lengkap}, Have a nice day !</h1>
-                    </div>
-                )}                    
-                    <div className="w-full h-full flex gap-4">
-                        <div className="text-black bg-slate-200 w-[40%] h-[280px] shadow-md rounded-md p-3 flex flex-col gap-4">
-                            <h2 className="text-center font-medium text-xl">Pilih Menu Admin </h2>
-                            <div className="flex flex-wrap gap-3 justify-center text-white">
-                                <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isLookup")}}>
-                                    <h2>Input Lookup</h2>
-                                </button>
-                                <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={handleDataJurusan}>
-                                    <h2>Input Data Siswa</h2>
-                                </button>
-                                <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isKelas")}}>
-                                    <h2>Input Kelas</h2>
-                                </button>
-                                <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isEvent")}}>
-                                    <h2>Input Link UAS</h2>
-                                </button>
+                    {(isUserLog) ? (
+                        <>
+                        <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
+                            <div className="w-[120px]">
+                                <h2 className="text-xl font-medium">Jaya Buana</h2>
+                            </div>
+                            <div className="flex gap-2 w-fit">
+                                <Navigation />
                             </div>
                         </div>
-                        <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center">
-                            {(isSiswa) && (
-                                <InputSiswa dataSiswa={dataJurusan} />
-                            )}
-
-                            {(isKelas) && (
-                                <InputKelas dataJurusan={data.dataJurusan} />
-                            )}
-
-                            {(isLookup) && (
-                                <InputLookup />
-                            )}
-
-                            {(isEvent) && (
-                                <InputUAS dataEvent={data} />
-                            )}
-
-                            {(initial) && (
-                                <div className="w-fit h-fit my-auto justify-center items-center">
-                                    <h2 className="text-center">Welcome to JayaBuana </h2>
+                    <div className="container relative min-h-screen flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
+                        {(initial) && (
+                            <div>
+                                <h1 className="text-2xl">Selamat Datang {userData.data[0].nama_lengkap}, Have a nice day !</h1>
+                            </div>
+                        )}                    
+                            <div className="w-full h-full flex gap-4">
+                                <div className="text-black bg-slate-200 w-[40%] h-[280px] shadow-md rounded-md p-3 flex flex-col gap-4">
+                                    <h2 className="text-center font-medium text-xl">Pilih Menu Admin </h2>
+                                    <div className="flex flex-wrap gap-3 justify-center text-white">
+                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isLookup")}}>
+                                            <h2>Input Lookup</h2>
+                                        </button>
+                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={handleDataJurusan}>
+                                            <h2>Input Data Siswa</h2>
+                                        </button>
+                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isKelas")}}>
+                                            <h2>Input Kelas</h2>
+                                        </button>
+                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isEvent")}}>
+                                            <h2>Input Link UAS</h2>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center">
+                                    {(isSiswa) && (
+                                        <InputSiswa dataSiswa={dataJurusan} />
+                                    )}
+        
+                                    {(isKelas) && (
+                                        <InputKelas dataJurusan={data.dataJurusan} />
+                                    )}
+        
+                                    {(isLookup) && (
+                                        <InputLookup />
+                                    )}
+        
+                                    {(isEvent) && (
+                                        <InputUAS dataEvent={data} />
+                                    )}
+        
+                                    {(initial) && (
+                                        <div className="w-fit h-fit my-auto justify-center items-center">
+                                            <h2 className="text-center">Welcome to JayaBuana </h2>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            {(isInputSiswa) && (
+                                <div className="w-full max-w-[59%] ml-auto">
+                                    <ListSiswaInput dataSiswa={dataSiswaInput} />
                                 </div>
                             )}
                         </div>
-                    </div>
-                    {(isInputSiswa) && (
-                        <div className="w-full max-w-[59%] ml-auto">
-                            <ListSiswaInput dataSiswa={dataSiswaInput} />
+                        </>
+                    ) : (
+                        <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
+                            <img src={`${process.env.NEXT_PUBLIC_URL_NOT_ALLOWED}`} alt="page not allowed" 
+                            className="max-w-md"
+                            />
+                            <p className="text-2xl">
+                                Mohon <a href="/" className="text-sky-600 font-semibold">Login</a> dahulu
+                            </p>                    
                         </div>
                     )}
-                </div>
                 </>
             ) : (
-                <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
-                    <p className="text-4xl font-bold">Page Not Allowed</p>
-                    <p className="text-base">
-                        Mohon Login dahulu
-                    </p>                    
-                </div>
+                <>
+                    <Modal 
+                    width='120px'
+                    aria-labelledby="modal-title"
+                    open={isLoading}
+                    >
+                        <Modal.Body>
+                            <Loading />
+                        </Modal.Body>
+                    </Modal>
+                </>
             )}
         </main>
         </>
@@ -186,12 +207,6 @@ export default function Index({data}){
 }
 
 export async function getServerSideProps({req, res}){
-
-    // const res = await prisma.data_siswa.findFirst({
-    //     where : {
-    //         kode_akses : ` ${ctx.query.uid}`
-    //     }
-    // });
 
     const dataKelas = await axios.get(`${env.WEBURL}/api/get/datakelas`);
     const dataMapel = await axios.get(`${env.WEBURL}/api/get/datamapel`);
@@ -204,14 +219,6 @@ export async function getServerSideProps({req, res}){
         dataEvent : dataEvent.data,
         dataJurusan : dataJurusan.data
     }
-
-    // const user = getCookie('dataUser', { req, res })
-    // console.info(user == undefined)
-    // setCookie('dataUser', resultData, { req, res, maxAge: 60 * 6 * 24 })
-    // let dataCookie = JSON.parse(getCookie('dataUser', { req, res })) 
-    // let dataFromCookie = cookie.parse(ctx.req.headers.cookie);
-    // let dataQuery = ctx.query; 
-    
     
     return{
         props :{
