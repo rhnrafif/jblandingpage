@@ -221,21 +221,24 @@ export default function Index({data}){
 
 export async function getServerSideProps({req, res}){
 
-    const dataKelas = await axios.get(`${env.WEBURL}/api/get/datakelas`);
-    const dataMapel = await axios.get(`${env.WEBURL}/api/get/datamapel`);
-    const dataEvent = await axios.get(`${env.WEBURL}/api/get/dataevent`);
-    const dataJurusan = await axios.get(`${env.WEBURL}/api/get/datajurusan`);    
+    const [dataKelas, dataMapel, dataEvent, dataJurusan] = await Promise.all([
+        axios.get(`${env.WEBURL}/api/get/datakelas`),
+        axios.get(`${env.WEBURL}/api/get/datamapel`),
+        axios.get(`${env.WEBURL}/api/get/dataevent`),
+        axios.get(`${env.WEBURL}/api/get/datajurusan`)
+    ]);
 
     const resultData = {
-        dataKelas : dataKelas.data,
-        dataMapel : dataMapel.data,
-        dataEvent : dataEvent.data,
-        dataJurusan : dataJurusan.data
-    }
-    
-    return{
-        props :{
-            data : resultData
-        }
-    }
+        dataKelas: dataKelas.data,
+        dataMapel: dataMapel.data,
+        dataEvent: dataEvent.data,
+        dataJurusan: dataJurusan.data
+    };
+
+    return {
+        props: {
+            data: resultData
+        }   
+    };
+
 }
