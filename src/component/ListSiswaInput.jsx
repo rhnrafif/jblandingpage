@@ -46,39 +46,6 @@ export default function ListSiswaInput({dataSiswa}) {
               </Row>
             </Col>
           );
-          return (
-            <Row justify="center" align="center">
-              <Col css={{ d: "flex" }}>
-                <Tooltip content="Edit user">
-                  <IconButton onClick={()=>{handleEdit(user.id)}}>
-                    <EditIcon size={20} fill="#979797" />
-                  </IconButton>
-                </Tooltip>
-              </Col>
-              <Col css={{ d: "flex" }}>
-                <Tooltip
-                  content="Delete user"
-                  color="error"
-                  onClick={()=>{handleConfirm(user.id)}}
-                >
-                  <IconButton>
-                    <DeleteIcon size={20} fill="#FF0080" />
-                  </IconButton>
-                </Tooltip>
-              </Col>
-              <Col css={{ d: "flex" }}>
-                <Tooltip
-                  content="Update Kode"
-                  color="primary"
-                  onClick={()=>{handleKode(user.id)}}
-                >
-                  <IconButton>
-                    <BsFillDice5Fill  />
-                  </IconButton>
-                </Tooltip>
-              </Col>
-            </Row>
-          );
         default:
           return cellValue;
       }

@@ -1,11 +1,14 @@
 import React, { useContext } from 'react'
-import {Dropdown, Input, Button, Modal, Text} from "@nextui-org/react"
+import {Dropdown, Input, Modal, Button, Text, Table} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { SiswaInput } from './GlobalState/SiswaInputProvider';
-import { DisplaySiswa } from './GlobalState/DisplaySiswaProvider'
+import { DisplaySiswa } from './GlobalState/DisplaySiswaProvider';
+import generateString from './Helper/generateString'
+
+import {read, utils, writeFile} from 'xlsx'
 
 export default function InputSiswa({dataSiswa}) {
   
@@ -99,7 +102,6 @@ export default function InputSiswa({dataSiswa}) {
         })
     } catch (error) {alert('Action Failed, Please try again');}
   }
-    
 
   return (
     <div className="flex flex-col gap-4 items-center">
@@ -175,11 +177,12 @@ export default function InputSiswa({dataSiswa}) {
             </div>
             
             <div className='mt-4'>
-                <Button type="submit"  color="primary" auto>
+                <Button type="submit" auto color={'primary'} >
                 Submit
                 </Button>
             </div>
         </form>
+
         {(isRefresh) && (
           <>
             <div className='w-fit ml-auto'>
@@ -189,6 +192,7 @@ export default function InputSiswa({dataSiswa}) {
             </div>
           </>
         )}
+
         <Modal
       closeButton
       open={isModal}
@@ -204,17 +208,4 @@ export default function InputSiswa({dataSiswa}) {
       </Modal>
     </div>
   )
-}
-
-
-
-function generateString(length) {
-    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let result = ' ';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-
-    return result;
 }

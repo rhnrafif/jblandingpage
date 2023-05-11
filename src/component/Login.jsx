@@ -23,10 +23,12 @@ export default function Login() {
             if(userSession.data[0].nama_lengkap == 'ADMIN'){
                 router.push('/admin')
                 setTimeout(()=>{alert('Anda masih memiliki session log in')}, 2500)
+                setIsLoading(true)
             } else {
                 let url = userSession.data[0].kode_akses.trim()
                 router.push(`/ujian/${url}`)
                 setTimeout(()=>{alert('Anda masih memiliki session log in')}, 2500)
+                setIsLoading(true)
             } 
         }
     },[])

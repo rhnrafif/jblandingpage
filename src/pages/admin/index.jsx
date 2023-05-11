@@ -10,9 +10,10 @@ import {getCookie, getCookies, setCookie, removeCookie} from "cookies-next"
 import { useRouter } from "next/router"
 import { SiswaInput } from "@/component/GlobalState/SiswaInputProvider"
 import { DisplaySiswa } from "@/component/GlobalState/DisplaySiswaProvider"
-import {Modal, Loading} from "@nextui-org/react"
+import {Modal, Loading, Button} from "@nextui-org/react"
 import ListSiswaInput from "@/component/ListSiswaInput"
 import { LoadingState } from "@/component/GlobalState/IsLoadingProvider"
+import ImportExcelSiswa from "@/component/ImportExcelSiswa"
 
 const env = process.env
 
@@ -34,6 +35,7 @@ export default function Index({data}){
     const [isKelas, setisKelas] = useState(false);
     const [isEvent, setIsEvent] = useState(false);
     const [initial, setInitial] = useState(true);
+    const [isImport, setIsImport] = useState(false);
 
     useEffect(()=>{
         const us = getCookie('dataUser')
@@ -146,9 +148,20 @@ export default function Index({data}){
                                         </button>
                                     </div>
                                 </div>
-                                <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center">
+                                <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center relative">
                                     {(isSiswa) && (
-                                        <InputSiswa dataSiswa={dataJurusan} />
+                                        <>
+                                        <div className='absolute top-3 right-2'>
+                                            <Button size={'sm'} auto onPress={()=>{setIsImport(!isImport)}} className='absolute'>
+                                            Import Excel
+                                            </Button>
+                                        </div>
+                                            {(isImport) ? (
+                                                <ImportExcelSiswa />
+                                            ) : (
+                                                <InputSiswa dataSiswa={dataJurusan} />
+                                            )}
+                                        </>
                                     )}
         
                                     {(isKelas) && (
