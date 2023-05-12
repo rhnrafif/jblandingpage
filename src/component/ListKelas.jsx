@@ -179,6 +179,11 @@ export default function ListKelas({dataKelas}) {
                 </Table.Row>
               )}
             </Table.Body>
+            <Table.Pagination
+                
+                align="center"
+                rowsPerPage={10}
+            />
           </Table>
 
           {/* modal update area */}
