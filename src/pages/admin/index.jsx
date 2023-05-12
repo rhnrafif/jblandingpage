@@ -15,8 +15,6 @@ import ListSiswaInput from "@/component/ListSiswaInput"
 import { LoadingState } from "@/component/GlobalState/IsLoadingProvider"
 import ImportExcelSiswa from "@/component/ImportExcelSiswa"
 
-const env = process.env
-
 export default function Index({data}){
     
     //session or user area
@@ -219,26 +217,28 @@ export default function Index({data}){
     )
 }
 
-export async function getServerSideProps({req, res}){
+export async function getServerSideProps({ req, res }) {
+  const protocol = req.headers["x-forwarded-proto"] || "http"; // Use the X-Forwarded-Proto header if available, or default to http
+  const host = req.headers.host;
+  const baseURL = `${protocol}://${host}`;
 
-    const [dataKelas, dataMapel, dataEvent, dataJurusan] = await Promise.all([
-        axios.get(`${env.WEBURL}/api/get/datakelas`),
-        axios.get(`${env.WEBURL}/api/get/datamapel`),
-        axios.get(`${env.WEBURL}/api/get/dataevent`),
-        axios.get(`${env.WEBURL}/api/get/datajurusan`)
-    ]);
+  const [dataKelas, dataMapel, dataEvent, dataJurusan] = await Promise.all([
+    axios.get(`${baseURL}/api/get/datakelas`),
+    axios.get(`${baseURL}/api/get/datamapel`),
+    axios.get(`${baseURL}/api/get/dataevent`),
+    axios.get(`${baseURL}/api/get/datajurusan`),
+  ]);
 
-    const resultData = {
-        dataKelas: dataKelas.data,
-        dataMapel: dataMapel.data,
-        dataEvent: dataEvent.data,
-        dataJurusan: dataJurusan.data
-    };
+  const resultData = {
+    dataKelas: dataKelas.data,
+    dataMapel: dataMapel.data,
+    dataEvent: dataEvent.data,
+    dataJurusan: dataJurusan.data,
+  };
 
-    return {
-        props: {
-            data: resultData
-        }   
-    };
-
+  return {
+    props: {
+      data: resultData,
+    },
+  };
 }

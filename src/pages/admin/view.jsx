@@ -11,8 +11,6 @@ import { useRouter } from 'next/router';
 import {getCookie} from "cookies-next"
 import { LoadingState } from '@/component/GlobalState/IsLoadingProvider';
 
-//env
-const env = process.env
 
 export default function uas({data}) {
 
@@ -410,15 +408,20 @@ export default function uas({data}) {
   )
 }
 
-export async function getServerSideProps(ctx){
-    const dataEvents = await axios.get(`${env.WEBURL}/api/get/dataevent`); 
+export async function getServerSideProps({ req, res }) {
+  const protocol = req.headers["x-forwarded-proto"] || "http"; // Use the X-Forwarded-Proto header if available, or default to http
+  const host = req.headers.host;
+  const baseURL = `${protocol}://${host}`;
 
-    const resultData = {
-        dataEvents : dataEvents.data
-    }
-    return{
-        props :{
-            data : resultData
-        }
-    }
+  const dataEvents = await axios.get(`${baseURL}/api/get/dataevent`);
+
+  const resultData = {
+    dataEvents: dataEvents.data,
+  };
+
+  return {
+    props: {
+      data: resultData,
+    },
+  };
 }
