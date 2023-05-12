@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import {Dropdown, Input, Modal, Button, Text, Table} from "@nextui-org/react"
+import {Dropdown, Input, Modal, Button, Text, Table, Loading} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import axios from 'axios'
@@ -20,6 +20,8 @@ export default function InputSiswa({dataSiswa}) {
     //cek data realtime
     const [classname, setClassname] = useState('');
     const [isRefresh, setIsRefresh] = useState(false);
+
+    const [isLoad, setIsLoad] = useState(false)
 
     const {handleSubmit, register, watch, formState:{errors}} = useForm();
 
@@ -72,11 +74,14 @@ export default function InputSiswa({dataSiswa}) {
 
   const submitTest = async(e)=>{
 
+    setIsLoad(true);
     if(e.nama_lengkap == " "){
+      setIsLoad(false);
       alert('Nama Lengkap tidak boleh kosong')
       return
     }
     if(selectedKelasValue == "Pilih kelas"){
+      setIsLoad(false);
       alert('Kelas harus dipilih')
       return
     } 
@@ -92,15 +97,17 @@ export default function InputSiswa({dataSiswa}) {
         await axios.post(`/api/add/datasiswa`, dataInput)
         .then((e)=>{
           if(e.status == 201){
+            setIsLoad(false);
             setIsModal(!isModal);
             setClassname(e.data.nama_kelas);
             setIsRefresh(true)
           }
         })
         .catch((err)=>{
+          setIsLoad(false)
           alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
-    } catch (error) {alert('Action Failed, Please try again');}
+    } catch (error) {setIsLoad(false);alert('Action Failed, Please try again');}
   }
 
   return (
@@ -192,6 +199,18 @@ export default function InputSiswa({dataSiswa}) {
             </div>
           </>
         )}
+
+        {(isLoad) && (
+        <Modal 
+        width='120px'
+        aria-labelledby="modal-title"
+        open={isLoad}
+        >
+            <Modal.Body>
+                <Loading type='points' />
+            </Modal.Body>
+        </Modal>
+      )}
 
         <Modal
       closeButton

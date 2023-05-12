@@ -1,5 +1,5 @@
 import React from 'react'
-import {Dropdown, Input, Button, Modal, Text} from "@nextui-org/react"
+import {Dropdown, Input, Button, Modal, Text, Loading} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import axios from 'axios'
@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 
 export default function InputLookup() {
   const {handleSubmit, register, watch, formState:{errors}} = useForm();
+  const [isLoad, setIsLoad] = useState(false);
 
   const route = useRouter();
     
@@ -28,13 +29,16 @@ export default function InputLookup() {
 
 
   const submitKelas = async(e)=>{
-
+    setIsLoad(true);
     if(selectedMapelValue == "Pilih"){
+      setIsLoad(false)
       alert("Name harus dipilih")
       return
     }
     if(e.value_name == " "){
+      setIsLoad(false)
       alert('Value tidak boleh kosong')
+      return
     }
 
     const dataInput = {
@@ -47,13 +51,15 @@ export default function InputLookup() {
         await axios.post("/api/add/lookup", dataInput)
         .then((e)=>{
             if(e.status == 201){
+              setIsLoad(false)
               setIsModal(!isModal)
             }
         })
         .catch((err)=>{
+          setIsLoad(false)
           alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
-    } catch (error) {alert('Action Failed, Please try again');}
+    } catch (error) {setIsLoad(false);alert('Action Failed, Please try again');}
   }
     
 
@@ -109,6 +115,19 @@ export default function InputLookup() {
             </Button>
         </div>          
       </form>
+      
+      {(isLoad) && (
+        <Modal 
+        width='120px'
+        aria-labelledby="modal-title"
+        open={isLoad}
+        >
+            <Modal.Body>
+                <Loading type='points' />
+            </Modal.Body>
+        </Modal>
+      )}
+
       <Modal
       closeButton
       open={isModal}

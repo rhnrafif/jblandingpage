@@ -1,5 +1,5 @@
 import React from 'react'
-import {Dropdown, Input, Button, Modal, Text} from "@nextui-org/react"
+import {Dropdown, Input, Button, Modal, Text, Loading} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import axios from 'axios';
@@ -9,6 +9,7 @@ import { SiswaInput } from './GlobalState/SiswaInputProvider';
 export default function InputKelas({dataJurusan}) {
 
   const {handleSubmit, register, watch, formState:{errors}} = useForm();
+  const [isLoad, setIsLoad] = useState(false);
 
   const route = useRouter()
 
@@ -29,12 +30,15 @@ export default function InputKelas({dataJurusan}) {
 
   const submitKelas = async(e)=>{
 
+    setIsLoad(true);
     if(e.nama_kelas == " "){
       alert('Nama Kelas tidak boleh kosong');
+      setIsLoad(false)
       return
     }
     if(selectedJurusanValue == "Pilih kelas"){
       alert('Kelas/Jurusan harus dipilih')
+      setIsLoad(false)
       return
     }
     
@@ -48,13 +52,16 @@ export default function InputKelas({dataJurusan}) {
         await axios.post("/api/add/datakelas", dataInput)
         .then((e)=>{
           if(e.status == 201){
+            setIsLoad(false)
             setIsModal(!isModal)
           }
         })
         .catch((err)=>{
+          setIsLoad(false)
           alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
     } catch (error) {
+        setIsLoad(false)
         alert('Action Failed, Please try again');
     }
   }
@@ -108,6 +115,19 @@ export default function InputKelas({dataJurusan}) {
             </Button>
           </div>
         </form>
+
+        {(isLoad) && (
+            <Modal 
+            width='120px'
+            aria-labelledby="modal-title"
+            open={isLoad}
+            >
+                <Modal.Body>
+                    <Loading type='points' />
+                </Modal.Body>
+            </Modal>
+          )}
+
         <Modal
       closeButton
       open={isModal}

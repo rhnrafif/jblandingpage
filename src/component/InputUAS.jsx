@@ -1,5 +1,5 @@
 import React from 'react'
-import {Dropdown, Input, Button, Modal, Text} from "@nextui-org/react"
+import {Dropdown, Input, Button, Modal, Text, Loading} from "@nextui-org/react"
 import {useForm} from "react-hook-form"
 import {useState, useMemo} from "react"
 import { useRouter } from 'next/router'
@@ -9,6 +9,7 @@ import axios from 'axios'
 export default function InputUAS({dataEvent}) {
     
      const {handleSubmit, register} = useForm();
+     const [isLoad, setIsLoad] = useState(false);
 
      const route = useRouter()
     
@@ -37,15 +38,19 @@ export default function InputUAS({dataEvent}) {
 
   const submitUAS = async(e)=>{
 
+    setIsLoad(true)
     if(selectedKelasValue == "Pilih Kelas"){
+        setIsLoad(false)
         alert('Kelas harus dipilih')
         return
     }
     if(selectedMapelValue == "Mata Pelajaran"){
+        setIsLoad(false)
         alert('Mata Pelajaran harus dipilih')
         return
     }
     if(e.link == " "){
+        setIsLoad(false)
         alert("Link tidak boleh kosong")
         return
     }
@@ -62,13 +67,16 @@ export default function InputUAS({dataEvent}) {
         await axios.post(`/api/add/datalink`, dataInput)
         .then((e)=>{
           if(e.status == 201){
+            setIsLoad(false)
             setIsModal(!isModal)
           }
         })
         .catch((err)=>{
+            setIsLoad(false)
             alert(`Terjadi kesalahan, ${err.response.data.message}`)
         })
     } catch (error) {
+        setIsLoad(false)
         alert('Action Failed, Please try again');
     }
   }
@@ -143,6 +151,19 @@ export default function InputUAS({dataEvent}) {
                 </Button>
             </div>
         </form>
+
+        {(isLoad) && (
+            <Modal 
+            width='120px'
+            aria-labelledby="modal-title"
+            open={isLoad}
+            >
+                <Modal.Body>
+                    <Loading type='points' />
+                </Modal.Body>
+            </Modal>
+        )}
+
         <Modal
       closeButton
       open={isModal}
