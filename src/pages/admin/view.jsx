@@ -22,22 +22,26 @@ export default function uas({data}) {
     //global state
     const [isLoading, setIsLoading] = useContext(LoadingState)
 
-    useEffect(()=>{
-        const us = getCookie('dataUser')
-        if(us == undefined){
-            route.push('/')
-        }else{
-            const userSession = JSON.parse(us)
-            if(userSession.data[0].nama_lengkap == 'ADMIN'){
-                setUserData(userSession.data[0])
-                setIsLoading(false)
-                setIsUserLog(true)
-            }else{
-                route.push('/')
-                setTimeout(()=>{alert('Anda BUKAN Admin')}, 2500)
-            }
+    useEffect(() => {
+        const us = getCookie('dataUser');
+        if (us === undefined) {
+            route.push('/');
+            return;
         }
-    },[])
+
+        const { data } = JSON.parse(us);
+        if (data[0].nama_lengkap === 'ADMIN') {
+            setUserData(data[0]);
+            setIsLoading(false);
+            setIsUserLog(true);
+        } else {
+            route.push('/');
+            setTimeout(() => {
+            alert('Anda BUKAN Admin');
+            }, 2500);
+        }
+    }, []);
+
 
   // state menu admin
     const [isSiswa, setIsSiswa] = useState(false);

@@ -19,24 +19,33 @@ export default function HelloScreen({data}) {
     //global state
     const [isLoading, setIsLoading] = useContext(LoadingState)
 
-    useEffect(()=>{
-        const us = getCookie('dataUser')
-        if(us == undefined){
-            route.push('/')
-        }else{
-          const userSession = JSON.parse(us)
-          if(userSession.data[0].nama_lengkap != 'ADMIN'){
-            let kode = userSession.data[0].kode_akses.trim()
-            axios.post(`/api/get/datauser`, {kode : kode})
-            .then((e)=>{
-              setUserLink(e.data.dataLinkUas)
-              setUserData(e.data.datauser)
-              setIsLoading(false)
-              setIsUserLog(true)
-            }).catch((error)=> {console.info(error)})
-          }else route.push('/')
-        }
-    },[])
+    useEffect(() => {
+      const us = getCookie('dataUser')
+      if (us === undefined) {
+        route.push('/')
+        return
+      }
+
+      const userSession = JSON.parse(us)
+      if (userSession.data[0].nama_lengkap === 'ADMIN') {
+        route.push('/')
+        return
+      }
+
+      const kode = userSession.data[0].kode_akses.trim()
+      axios.post(`/api/get/datauser`, { kode })
+        .then((res) => {
+          const { dataLinkUas, datauser } = res.data
+          setUserLink(dataLinkUas)
+          setUserData(datauser)
+          setIsLoading(false)
+          setIsUserLog(true)
+        })
+        .catch((error) => {
+          alert("Action Failed, Please try again");
+        })
+    }, [])
+
 
     const handleLogout = ()=>{
     deleteCookie('dataUser')

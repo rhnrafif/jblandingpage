@@ -14,24 +14,30 @@ export default function Login() {
     //global state
     const [isLoading, setIsLoading] = useContext(LoadingState)
 
-    useEffect(()=>{
-        const us = getCookie('dataUser')
-        if(us == undefined){
-            router.push('/')
-        }else{
-            const userSession = JSON.parse(us)
-            if(userSession.data[0].nama_lengkap == 'ADMIN'){
-                router.push('/admin')
-                setTimeout(()=>{alert('Anda masih memiliki session log in')}, 2500)
-                setIsLoading(true)
-            } else {
-                let url = userSession.data[0].kode_akses.trim()
-                router.push(`/ujian/${url}`)
-                setTimeout(()=>{alert('Anda masih memiliki session log in')}, 2500)
-                setIsLoading(true)
-            } 
+    useEffect(() => {
+        const us = getCookie('dataUser');
+        if (!us) {
+            router.push('/');
+            return;
         }
-    },[])
+
+        const { data } = JSON.parse(us);
+        const { nama_lengkap, kode_akses } = data[0];
+
+        if (nama_lengkap === 'ADMIN') {
+            router.push('/admin');
+        } else {
+            const url = kode_akses.trim();
+            router.push(`/ujian/${url}`);
+        }
+
+        setTimeout(() => {
+            alert('Anda masih memiliki session log in');
+        }, 2500);
+
+        setIsLoading(true);
+    }, []);
+
 
     // useform
     const {handleSubmit, register, watch, formState:{errors}} = useForm();
@@ -51,37 +57,25 @@ export default function Login() {
         value : e.kode_akses
     }
 
-    //area hit API
     try {
-        await axios.post("/api/get/login", dataInput)
-        .then((res)=>{
-            if(res.status === 200){
-                if(res.data.data.length != 0){
-                    if(res.data.data[0].nama_lengkap == "ADMIN"){
-                        setCookie('dataUser', res.data)
-                        router.push('/admin')
-                    }else{
-                        let url = res.data.data[0].kode_akses.trim()
-                        setCookie('dataUser', res.data)
-                        router.push(`/ujian/${url}`)
-                    }
-                }else{
-                    setIsLoading(false)
-                    alert('User tidak ditemukan')
-                    document.getElementById('kode_akses').value = ""                    
-                    router.push('/')
-                }
-            }else{
-                setIsLoading(false)   
-                alert('Login gagal, mohon coba kembali')
-                document.getElementById('kode_akses').value = ""
-                router.push('/')
-            }
-        })
+        const { data } = await axios.post("/api/get/login", dataInput);
+        if (data.data.length === 0) {
+            setIsLoading(false);
+            alert("User tidak ditemukan");
+            return router.push("/");
+        }
+        const { nama_lengkap, kode_akses } = data.data[0];
+        if (nama_lengkap === "ADMIN") {
+            setCookie("dataUser", data);
+            return router.push("/admin");
+        }
+        setCookie("dataUser", data);
+        return router.push(`/ujian/${kode_akses.trim()}`);
     } catch (error) {
-        setIsLoading(false)
-        alert('Action Failed, Please try again');
+        setIsLoading(false);
+        alert("Action Failed, Please try again");
     }
+
   }
 
   return (
@@ -103,7 +97,7 @@ export default function Login() {
         <form action="" className="flex flex-col gap-3 md:gap-5 items-center" onSubmit={handleSubmit(submitLogin)}>
             <div className="flex gap-2 items-center justify-between w-full">
                 <div className='w-full flex flex-col justify-center items-start gap-1'>
-                    <Input clearable label="Kode Akses"  name="kode_akses" width="240px" bordered color='primary' id='kode_akses'
+                    <Input clearable label="Kode Akses"  name="kode_akses" width="240px" bordered color='primary'
                     
                     {... register("kode_akses", {
                         required : {

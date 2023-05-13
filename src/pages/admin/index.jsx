@@ -35,22 +35,26 @@ export default function Index({data}){
     const [initial, setInitial] = useState(true);
     const [isImport, setIsImport] = useState(false);
 
-    useEffect(()=>{
-        const us = getCookie('dataUser')
-        if(us == undefined){
-            route.push('/')
-        }else{
-            const userSession = JSON.parse(us)
-            if(userSession.data[0].nama_lengkap == 'ADMIN'){
-                setUserData(userSession)
-                setIsLoading(false)
-                setIsUserLog(true)
-            }else{
-                route.push('/')
-                setTimeout(()=>{alert('Anda BUKAN Admin, silahkan log in kembali')}, 2500)
-            }
+    useEffect(() => {
+        const us = getCookie('dataUser');
+        if (us === undefined) {
+            route.push('/');
+            return;
         }
-    },[])
+
+        const userSession = JSON.parse(us);
+        if (userSession.data[0].nama_lengkap === 'ADMIN') {
+            setUserData(userSession);
+            setIsLoading(false);
+            setIsUserLog(true);
+        } else {
+            route.push('/');
+            setTimeout(() => {
+            alert('Anda BUKAN Admin, silahkan log in kembali');
+            }, 2500);
+        }
+    }, []);
+
 
     //hanlde Menu Admin
     const handleMenu = (act)=>{
