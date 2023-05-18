@@ -6,24 +6,29 @@ import { Table, Modal, Button, Text, Loading } from '@nextui-org/react'
 import axios from 'axios'
 import { LoadingState } from './GlobalState/IsLoadingProvider'
 
-export default function ImportExcelSiswa() {
+export default function ImportExcelLookup() {
 
     
-  const [dataExcel, setDataExcel] = useState([])
+  const [dataExcelLookup, setDataExcelLookup] = useState([])
   const [isLoad, setIsLoad] = useState(false)
-  const [isModalImport, setIsModalImport] = useState(false);
+  const [isModalImportLookup, setIsModalImportLookup] = useState(false);
   const [isImportR, setIsImportR] = useState(false);
 
   const handleImport = ($event) => {
-        if(dataExcel.length > 0){
+        if(dataExcelLookup.length > 0){
             return
         }
-        if(isModalImport)
+        if(isModalImportLookup)
             setIsImportR(false)
         
         const files = $event.fileList;
+
         if($event.file.status == "done"){
             if (files.length) {
+                const fileName = files[0].name.split('.');
+                if(!fileName[0].toLowerCase().includes("lookup")){
+                    return alert('Nama File tidak cocok')
+                }
                 const file = files[0];
                 const reader = new FileReader();
                 reader.onload = (event) => {
@@ -32,7 +37,7 @@ export default function ImportExcelSiswa() {
     
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
-                        setDataExcel(rows)
+                        setDataExcelLookup(rows)
                     }
                 }
                 reader.readAsArrayBuffer(file.originFileObj);
@@ -44,10 +49,10 @@ export default function ImportExcelSiswa() {
   const submitImport = async(e)=>{
     if(e.length != 0){
         //area hit API
-        setIsModalImport(false)
+        setIsModalImportLookup(false)
         setIsLoad(true)
         try {
-            await axios.post(`/api/add/datasiswaexcel`, {data : e})
+            await axios.post(`/api/add/datalookupexcel`, {data : e})
             .then((e)=>{
               if(e.status == 201){
                 setIsLoad(false)
@@ -56,7 +61,7 @@ export default function ImportExcelSiswa() {
             })
             .catch((err)=>{
               setIsLoad(false)
-              setIsModalImport(true)
+              setIsModalImportLookup(true)
               setTimeout(()=>{alert(`Terjadi kesalahan, ${err.response.data.message}`)},1500)
             })
         } catch (error) {alert('Action Failed, Please try again');}
@@ -66,25 +71,25 @@ export default function ImportExcelSiswa() {
   //data
     const columns = [
         {
-          key: "NAMA",
-          label: "NAMA",
+          key: "NAME",
+          label: "NAME",
         },
         {
-          key: "KELAS",
-          label: "ROLE",
+          key: "VALUE",
+          label: "VALUE",
         },
       ];
   
     return (
       <>
         <div className="flex flex-col gap-4 items-center">
-            <p className="text-lg font-semibold">Import data Siswa</p>
-            <Upload name='file' accept='.xls, .xlsx' onChange={handleImport} onRemove={()=>{setDataExcel([])}} maxCount={1}>
+            <p className="text-lg font-semibold">Import data Lookup</p>
+            <Upload name='file' accept='.xls, .xlsx' onChange={handleImport} onRemove={()=>{setDataExcelLookup([])}} maxCount={1}>
                 <AntdButton icon={<UploadOutlined />}>Click to Upload</AntdButton>
             </Upload>
-            {(isImportR && dataExcel.length > 0) && (
+            {(isImportR && dataExcelLookup.length > 0) && (
               <>
-                    <Button auto bordered size={'sm'} onPress={()=>{setIsModalImport(true)}}>
+                    <Button auto bordered size={'sm'} onPress={()=>{setIsModalImportLookup(true)}}>
                         Import
                     </Button>
                 </>
@@ -104,19 +109,19 @@ export default function ImportExcelSiswa() {
 
           
 
-          {(isModalImport) && (
+          {(isModalImportLookup) && (
             <>
-              {(dataExcel.length > 0) && (
+              {(dataExcelLookup.length > 0) && (
                 <>
                   <Modal
                   closeButton
                   aria-labelledby="modal-title"
-                  onClose={()=>{setIsModalImport(false)}}
-                  open={isModalImport}
+                  onClose={()=>{setIsModalImportLookup(false)}}
+                  open={isModalImportLookup}
                   >
                       <>
                         <Modal.Header>
-                            <Text size={18}>Konfirmasi Input File {dataExcel[0].KELAS} ?</Text>
+                            <Text size={18}>Konfirmasi Input File ?</Text>
                         </Modal.Header>
                         <Modal.Body>
                               <Table
@@ -132,9 +137,9 @@ export default function ImportExcelSiswa() {
                                       <Table.Column key={column.key}>{column.label}</Table.Column>
                                     )}
                                   </Table.Header>
-                                  <Table.Body items={dataExcel}>
+                                  <Table.Body items={dataExcelLookup}>
                                     {(item) => (
-                                        <Table.Row key={item.NAMA}>
+                                        <Table.Row key={item.VALUE}>
                                           {(columnKey) => <Table.Cell>{item[columnKey]}</Table.Cell>}
                                         </Table.Row>
                                     )}
@@ -148,7 +153,7 @@ export default function ImportExcelSiswa() {
                         <Modal.Footer
                         justify='center'
                         >
-                          <Button auto onPress={()=>{submitImport(dataExcel)}} >SUBMIT</Button>
+                          <Button auto onPress={()=>{submitImport(dataExcelLookup)}} >SUBMIT</Button>
                         </Modal.Footer>
                       </>
                   </Modal>

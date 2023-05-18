@@ -1,17 +1,16 @@
-import Link from "next/link"
 import React, { useState, useEffect, useContext } from "react"
 import axios from "axios"
-import InputSiswa from "@/component/InputSiswa"
-import InputUAS from "@/component/InputUAS"
+import InputKelas from "@/component/InputKelas"
+import InputLookup from "@/component/InputLookup"
 import Navigation from "@/component/Navigation"
 import {getCookie} from "cookies-next"
 import { useRouter } from "next/router"
 import { SiswaInput } from "@/component/GlobalState/SiswaInputProvider"
 import { DisplaySiswa } from "@/component/GlobalState/DisplaySiswaProvider"
 import {Modal, Loading, Button} from "@nextui-org/react"
-import ListSiswaInput from "@/component/ListSiswaInput"
 import { LoadingState } from "@/component/GlobalState/IsLoadingProvider"
-import ImportExcelSiswa from "@/component/ImportExcelSiswa"
+import ImportExcelLookup from "@/component/ImportExcelLookup"
+import ImportExcelKelas from "@/component/ImportExcelKelas"
 
 export default function Index({data}){
     
@@ -26,15 +25,15 @@ export default function Index({data}){
     const [isLoading, setIsLoading] = useContext(LoadingState)
 
     // state menu admin
-    const [isSiswa, setIsSiswa] = useState(false);
-    const [isEvent, setIsEvent] = useState(false);
+    const [isLookup, setisLookup] = useState(false);
+    const [isKelas, setisKelas] = useState(false);
     const [initial, setInitial] = useState(true);
-    const [isImport, setIsImport] = useState(false);
 
     const [navLink, setNavLink] = useState({});
+    const [isImportLookup, setIsImportLookup] = useState(false);
+    const [isImportKelas, setIsImportKelas] = useState(false);
 
     useEffect(() => {
-        setIsInputSiswa(false);
         const us = getCookie('dataUser');
         if (us === undefined) {
             route.push('/');
@@ -42,15 +41,15 @@ export default function Index({data}){
         }
 
         const userSession = JSON.parse(us);
-        if (userSession.data[0].nama_lengkap === 'ADMIN') {
+        if (userSession.data[0].nama_lengkap === 'SA') {
             setUserData(userSession);
-            setNavLink({input : '/admin', view : '/admin/view'})
+            setNavLink({input : '/sa', view : '/sa/view'})
             setIsLoading(false);
             setIsUserLog(true);
         } else {
             route.push('/');
             setTimeout(() => {
-            alert('Anda BUKAN Admin, silahkan log in kembali');
+            alert('Anda BUKAN Super Admin, silahkan log in kembali');
             }, 2500);
         }
     }, []);
@@ -60,33 +59,22 @@ export default function Index({data}){
     const handleMenu = (act)=>{
         switch(act)
         {
-            case "isSiswa":
-                setIsSiswa(true);
-                setIsEvent(false);
+            case "isLookup":
+                setisLookup(true);
+                setisKelas(false);
                 setInitial(false);
                 break;
-            case "isEvent":
-                setIsSiswa(false);
-                setIsEvent(true);
+            case "isKelas":
+                setisLookup(false);
+                setisKelas(true);
                 setInitial(false);
-                setIsInputSiswa(false);
                 break;
             default:
-                setIsSiswa(false);
-                setIsEvent(false);
+                setisLookup(false);
+                setisKelas(false);
                 setInitial(true);
-                setIsInputSiswa(false);
                 break;
         }
-    }
-
-    //handle data jurusan utk input siswa
-    const [dataJurusan, setDataJurusan] = useState([])
-    const handleDataJurusan = async()=>{
-        await axios.get("/api/get/datajurusan").then((e)=>{
-            setDataJurusan(e.data)
-            handleMenu("isSiswa")
-        }).catch((err)=>{alert('Mohon Coba Lagi')})
     }
 
     return(
@@ -114,32 +102,44 @@ export default function Index({data}){
                                 <div className="text-black bg-slate-200 w-[40%] h-[280px] shadow-md rounded-md p-3 flex flex-col gap-4">
                                     <h2 className="text-center font-medium text-xl">Pilih Menu Admin </h2>
                                     <div className="flex flex-wrap gap-3 justify-center text-white">
-                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={handleDataJurusan}>
-                                            <h2>Input Data Siswa</h2>
+                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isLookup")}}>
+                                            <h2>Input Lookup</h2>
                                         </button>
-                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isEvent")}}>
-                                            <h2>Input Link UAS</h2>
+                                        <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isKelas")}}>
+                                            <h2>Input Kelas</h2>
                                         </button>
                                     </div>
                                 </div>
                                 <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center relative">
-                                    {(isSiswa) && (
+                                    
+                                    {(isKelas) && (
                                         <>
                                         <div className='absolute top-3 right-2'>
-                                            <Button size={'sm'} auto onPress={()=>{setIsImport(!isImport)}} className='absolute'>
+                                            <Button size={'sm'} auto onPress={()=>{setIsImportKelas(!isImportKelas)}} className='absolute'>
                                             Import Excel
                                             </Button>
                                         </div>
-                                            {(isImport) ? (
-                                                <ImportExcelSiswa />
+                                            {(isImportKelas) ? (
+                                                <ImportExcelKelas />
                                             ) : (
-                                                <InputSiswa dataSiswa={dataJurusan} />
+                                                <InputKelas dataJurusan={data.dataJurusan} />
                                             )}
                                         </>
                                     )}
         
-                                    {(isEvent) && (
-                                        <InputUAS dataEvent={data} />
+                                    {(isLookup) && (
+                                        <>
+                                        <div className='absolute top-3 right-2'>
+                                            <Button size={'sm'} auto onPress={()=>{setIsImportLookup(!isImportLookup)}} className='absolute'>
+                                            Import Excel
+                                            </Button>
+                                        </div>
+                                            {(isImportLookup) ? (
+                                                <ImportExcelLookup />
+                                            ) : (
+                                                <InputLookup />
+                                            )}
+                                        </>
                                     )}
         
                                     {(initial) && (
@@ -149,11 +149,6 @@ export default function Index({data}){
                                     )}
                                 </div>
                             </div>
-                            {(isInputSiswa) && (
-                                <div className="w-full max-w-[59%] ml-auto">
-                                    <ListSiswaInput dataSiswa={dataSiswaInput} />
-                                </div>
-                            )}
                         </div>
                         </>
                     ) : (
@@ -190,13 +185,11 @@ export async function getServerSideProps({ req, res }) {
   const host = req.headers.host;
   const baseURL = `${protocol}://${host}`;
 
-  const [dataMapel, dataJurusan] = await Promise.all([
-    axios.get(`${baseURL}/api/get/datamapel`),
+  const [ dataJurusan] = await Promise.all([
     axios.get(`${baseURL}/api/get/datajurusan`),
   ]);
 
   const resultData = {
-    dataMapel: dataMapel.data,
     dataJurusan: dataJurusan.data,
   };
 

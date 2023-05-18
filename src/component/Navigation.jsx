@@ -5,7 +5,7 @@ import {getCookie, deleteCookie} from "cookies-next"
 import { useRouter } from 'next/router'
 import { LoadingState } from './GlobalState/IsLoadingProvider'
 
-export default function Navigation() {
+export default function Navigation({link}) {
   const route = useRouter();
   const [isLoading, setIsLoading] = useContext(LoadingState)
   const handleLogout = ()=>{
@@ -17,9 +17,9 @@ export default function Navigation() {
   return (
         <>
         <Link className="text-lg h-[40px] w-[120px] flex justify-center items-center rounded-md hover:bg-sky-600 hover:text-white" 
-        href={'/admin'}>Input Menu</Link>
+        href={link.input}>Input Menu</Link>
         <Link className="text-lg h-[40px] w-[120px] flex justify-center items-center rounded-md hover:bg-sky-600 hover:text-white" 
-        href={'/admin/view'}>Data View</Link>
+        href={link.view}>Data View</Link>
         <Button
         flat
         auto

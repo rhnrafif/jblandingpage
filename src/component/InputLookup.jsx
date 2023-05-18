@@ -24,7 +24,7 @@ export default function InputLookup() {
     const handleModal = ()=>{
       setIsModal(!isModal)
       document.getElementById('inputLookup').value = ""
-      route.push('/admin')
+      route.push('/sa')
     }
 
 

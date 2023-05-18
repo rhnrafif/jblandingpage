@@ -25,7 +25,7 @@ export default function InputKelas({dataJurusan}) {
     const handleModal = ()=>{
       setIsModal(!isModal)
       document.getElementById('nama_kelas').value = ""
-      route.push('/admin')
+      route.push('/sa')
     }
 
   const submitKelas = async(e)=>{

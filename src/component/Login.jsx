@@ -24,8 +24,9 @@ export default function Login() {
         const { data } = JSON.parse(us);
         const { nama_lengkap, kode_akses } = data[0];
 
-        if (nama_lengkap === 'ADMIN') {
-            router.push('/admin');
+        if (nama_lengkap === 'ADMIN' || nama_lengkap === 'SA') {
+            if(nama_lengkap === 'SA') return router.push('/sa');
+            if(nama_lengkap === 'ADMIN') return router.push('/admin');
         } else {
             const url = kode_akses.trim();
             router.push(`/ujian/${url}`);
@@ -51,32 +52,36 @@ export default function Login() {
             return
         }
 
-    setIsLoading(!isLoading)
+        setIsLoading(!isLoading)
 
-    const dataInput = {
-        value : e.kode_akses
-    }
-
-    try {
-        const { data } = await axios.post("/api/get/login", dataInput);
-        if (data.data.length === 0) {
-            setIsLoading(false);
-            alert("User tidak ditemukan");
-            return router.push("/");
+        const dataInput = {
+            value : e.kode_akses
         }
-        const { nama_lengkap, kode_akses } = data.data[0];
-        if (nama_lengkap === "ADMIN") {
+
+        try {
+            const { data } = await axios.post("/api/get/login", dataInput);
+            if (data.data.length === 0) {
+                setIsLoading(false);
+                alert("User tidak ditemukan");
+                return router.push("/");
+            }
+            const { nama_lengkap, kode_akses } = data.data[0];
+            if (nama_lengkap === "ADMIN") {
+                setCookie("dataUser", data);
+                return router.push("/admin");
+            }
+            if(nama_lengkap === "SA"){
+                setCookie("dataUser", data);
+                return router.push("/sa")
+            }
             setCookie("dataUser", data);
-            return router.push("/admin");
+            return router.push(`/ujian/${kode_akses.trim()}`);
+        } catch (error) {
+            setIsLoading(false);
+            alert("Action Failed, Please try again");
         }
-        setCookie("dataUser", data);
-        return router.push(`/ujian/${kode_akses.trim()}`);
-    } catch (error) {
-        setIsLoading(false);
-        alert("Action Failed, Please try again");
-    }
 
-  }
+    }
 
   return (
     <>
