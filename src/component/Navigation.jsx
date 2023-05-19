@@ -4,6 +4,7 @@ import { Button } from '@nextui-org/react'
 import {getCookie, deleteCookie} from "cookies-next"
 import { useRouter } from 'next/router'
 import { LoadingState } from './GlobalState/IsLoadingProvider'
+import Image from 'next/image'
 
 export default function Navigation({link}) {
   const route = useRouter();

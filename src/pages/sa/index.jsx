@@ -11,6 +11,7 @@ import {Modal, Loading, Button} from "@nextui-org/react"
 import { LoadingState } from "@/component/GlobalState/IsLoadingProvider"
 import ImportExcelLookup from "@/component/ImportExcelLookup"
 import ImportExcelKelas from "@/component/ImportExcelKelas"
+import Image from "next/image"
 
 export default function Index({data}){
     
@@ -84,9 +85,9 @@ export default function Index({data}){
                 <>
                     {(isUserLog) ? (
                         <>
-                        <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
+                        <div className="w-full h-fit max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700 lg:py-2">
                             <div className="w-[120px]">
-                                <h2 className="text-xl font-medium">Jaya Buana</h2>
+                                <Image src={'/logo.svg'} width={80} height={80} alt="logo" />
                             </div>
                             <div className="flex gap-2 w-fit">
                                 <Navigation link={navLink} />

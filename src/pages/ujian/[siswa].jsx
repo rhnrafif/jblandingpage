@@ -5,6 +5,7 @@ import {useRouter} from "next/router"
 import { useEffect, useState, useContext } from "react"
 import { Button, Modal, Loading } from "@nextui-org/react";
 import { LoadingState } from "@/component/GlobalState/IsLoadingProvider";
+import Image from "next/image";
 
 export default function HelloScreen({data}) {
   
@@ -55,7 +56,7 @@ export default function HelloScreen({data}) {
 
   return (
     <>      
-        <main className='min-w-full min-h-screen bg-slate-100 text-black' >
+        <main className='min-w-full min-h-screen bg-slate-100 text-black px-2 relative' >
           <>
           {(isLoading == false) ? (
             <>    
@@ -71,29 +72,32 @@ export default function HelloScreen({data}) {
                 <>
                   {(isUserLog) ? (
                 <>
-                    <div className="w-full h-[60px] max-w-[980px] flex justify-between items-center mx-auto lg:border-b-2 lg:border-gray-700">
+                    <div className="w-full h-fit max-w-[980px] flex justify-between items-center mx-auto lg:border-b-2 lg:border-gray-700 pt-4 md:pb-3">
                         <div className="w-full flex justify-center">
-                            <h2 className="text-xl font-medium">Jaya Buana</h2>
+                          <Image src={'/logo.svg'} width={100} height={100} alt="logo" />
                         </div>
-                        <Button
+                    </div>
+                    <div className="absolute top-3 right-2">
+                      <Button
+                        size={"sm"}
                         auto
                         onClick={handleLogout}
                         >
                           Log out
                         </Button>
                     </div>
-                  <div className="container w-full relative min-h-screen flex gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5 px-2 ">
+                  <div className="container w-full relative min-h-screen flex gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-3 px-2 ">
                         <div className=" w-full flex flex-col items-center mx-auto gap-4 md:gap-10">
                             <div className="flex flex-col items-center gap-2">
                               <div className="flex flex-col items-center">
                                 <h1 className="text-base md:text-xl">UJIAN AKHIR SEMESTER GENAP </h1>
                                 <h1 className="text-base md:text-xl">TAHUN AJARAN 2022/2023 </h1>
                               </div>
-                              <h1 className="text-base md:text-lg">Selamat Datang, {userData[0].nama_lengkap}</h1>
+                              <h1 className="text-base md:text-lg">Selamat Datang, <span className="font-semibold">{userData[0].nama_lengkap}</span></h1>
                               <h1 className="text-base md:text-lg">Pastikan Data Diri kamu benar ya !</h1>
                             </div>
                             <div className="w-full flex flex-col items-center gap-5">
-                              <div className="w-[75%] text-black bg-slate-200 mx-auto h-fit shadow-md rounded-md p-1 md:w-[380px] ">
+                              <div className="w-[75%] text-black bg-slate-200 mx-auto h-fit shadow-md rounded-md py-3 px-2 md:w-[380px] ">
                                   <div className="flex flex-col items-start gap-3 w-full h-full">
                                       <div className=' w-full flex flex-row justify-start items-center gap-2'>
                                           <p className="w-[25%]">Nama </p>

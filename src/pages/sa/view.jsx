@@ -8,6 +8,7 @@ import ListLookup from '@/component/ListLookup';
 import { useRouter } from 'next/router';
 import {getCookie} from "cookies-next"
 import { LoadingState } from '@/component/GlobalState/IsLoadingProvider';
+import Image from 'next/image';
 
 
 export default function uas({data}) {
@@ -99,15 +100,15 @@ export default function uas({data}) {
                 <>
                     {(isUserLog) ? (
                         <>
-                        <div className="w-full h-[60px] max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700">
+                        <div className="w-full h-fit max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700 lg:py-2">
                             <div className="w-[120px]">
-                                <h2 className="text-xl font-medium">Jaya Buana</h2>
+                                <Image src={'/logo.svg'} width={80} height={80} alt="logo" />
                             </div>
                             <div className="flex gap-2 w-fit">
                                 <Navigation link={navLink} />
                             </div>
                         </div>
-                        <div className="container relative min-h-screen flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
+                        <div className="container relative min-h-screen flex flex-col items-center gap-2 max-w-[1180px] mx-auto bg-slate-100 mt-5">
                             {(initial) && (
                             <div>
                                 <h1 className="text-2xl">Selamat Datang Admin, Have a nice day !</h1>
