@@ -61,12 +61,11 @@ export default function HelloScreen({data}) {
           {(isLoading == false) ? (
             <>    
               {(isError) ? (
-                <div className="w-full h-screen flex flex-col justify-center items-center">
-                    <img src={`${process.env.NEXT_PUBLIC_URL_NOT_FOUND}`} 
-                    alt="page not found"
-                    className="max-w-md"
-                    />
-                    <p className="text-2xl">Back to <a href="/" className="text-sky-500 font-semibold">Login Page</a></p>
+                <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
+                    <Image src={'/notall.svg'} width={400} height={400} alt="page not allowed" />
+                    <p className="text-2xl">
+                        Mohon <a href="/" className="text-sky-600 font-semibold">Login</a> dahulu
+                    </p>                    
                 </div>
               ) : (
                 <>
@@ -136,9 +135,7 @@ export default function HelloScreen({data}) {
                 </>
                 ) : (
                   <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
-                      <img src={`${process.env.NEXT_PUBLIC_URL_NOT_ALLOWED}`} alt="page not allowed" 
-                      className="max-w-md"
-                      />
+                      <Image src={'/notall.svg'} width={400} height={400} alt="page not allowed" />
                       <p className="text-2xl">
                           Mohon <a href="/" className="text-sky-600 font-semibold">Login</a> dahulu
                       </p>                    

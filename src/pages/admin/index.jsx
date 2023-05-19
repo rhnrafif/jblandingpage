@@ -159,9 +159,7 @@ export default function Index({data}){
                         </>
                     ) : (
                         <div className="w-full min-h-screen flex flex-col justify-center items-center gap-3">
-                            <img src={`${process.env.NEXT_PUBLIC_URL_NOT_ALLOWED}`} alt="page not allowed" 
-                            className="max-w-md"
-                            />
+                            <Image src={'/notall.svg'} width={400} height={400} alt="page not allowed" />
                             <p className="text-2xl">
                                 Mohon <a href="/" className="text-sky-600 font-semibold">Login</a> dahulu
                             </p>                    
