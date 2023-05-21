@@ -89,8 +89,9 @@ export default function HelloScreen({data}) {
                         <div className=" w-full flex flex-col items-center mx-auto gap-4 md:gap-10">
                             <div className="flex flex-col items-center gap-2">
                               <div className="flex flex-col items-center">
-                                <h1 className="text-base md:text-xl">UJIAN AKHIR SEMESTER GENAP </h1>
-                                <h1 className="text-base md:text-xl">TAHUN AJARAN 2022/2023 </h1>
+                                <h1 className="text-base md:text-xl">PENILAIAN AKHIR TAHUN</h1>
+                                <h1 className="text-base md:text-xl">SEMESTER GENAP</h1>
+                                <h1 className="text-base md:text-xl">TAHUN PELAJARAN 2022/2023</h1>
                               </div>
                               <h1 className="text-base md:text-lg">Selamat Datang, <span className="font-semibold">{userData[0].nama_lengkap}</span></h1>
                               <h1 className="text-base md:text-lg">Pastikan Data Diri kamu benar ya !</h1>
