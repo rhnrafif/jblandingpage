@@ -18,7 +18,7 @@ export default async function handler(req, res){
                 join data_kelas b on cast(a.kelas_id as integer) = b.id
                 join link_ujian c on c.jurusan_id = b.jurusan_id
                 join "Lookup" d on d.id = cast(c.mapel_id as integer)
-                where Replace(a.kode_akses,' ','') = ${dataInput.kode} and c.status = true
+                where Replace(a.kode_akses,' ','') = ${dataInput.kode} and c.status = true and c.is_active = true
                 `
                 .then((e)=>{
                     res.status(200).json({datauser : dataUserInit, dataLinkUas : e})
