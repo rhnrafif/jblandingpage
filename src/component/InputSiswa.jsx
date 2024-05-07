@@ -115,7 +115,7 @@ export default function InputSiswa({dataSiswa}) {
         <p className="text-lg font-semibold">Input data Siswa</p>
         <form action="" className="flex flex-col gap-3 items-center" onSubmit={handleSubmit(submitTest)}>
             <div className='flex flex-col'>
-                  <div className="flex gap-2 items-center justify-between w-full">
+                  <div className="flex flex-wrap justify-center sm:flex-row gap-2 items-center sm:justify-between w-full">
 
                         <Input clearable label="Nama Lengkap" name="nama_lengkap" width="240px" id='inputSiswa'
                         {... register("nama_lengkap", {
@@ -144,7 +144,7 @@ export default function InputSiswa({dataSiswa}) {
                                   onAction={(i)=>{handleDataKelas(i)}}
                               >
                                   {(i)=>(
-                                      <Dropdown.Item key={i.value}>
+                                      <Dropdown.Item className='text-sm sm:text-base' key={i.value}>
                                           {i.value}
                                       </Dropdown.Item>
                                   )}
@@ -170,7 +170,7 @@ export default function InputSiswa({dataSiswa}) {
                                   items={dataKelas}
                               >
                                   {(i)=>(
-                                      <Dropdown.Item key={i.nama_kelas}>
+                                      <Dropdown.Item className='text-sm sm:text-base' key={i.nama_kelas}>
                                           {i.nama_kelas}
                                       </Dropdown.Item>
                                   )}

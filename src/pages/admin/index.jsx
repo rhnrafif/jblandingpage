@@ -97,11 +97,11 @@ export default function Index({data}){
                 <>
                     {(isUserLog) ? (
                         <>
-                        <div className="w-full h-fit max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700 lg:py-2">
+                        <div className="w-full h-fit py-2 sm:py-0 max-w-[1180px] flex flex-col sm:flex-row justify-between items-center mx-auto border-b-2 border-gray-700 lg:py-2">
                             <div className="w-[120px]">
                                 <Image src={'/logo.svg'} width={80} height={80} alt="logo" />
                             </div>
-                            <div className="flex gap-2 w-fit">
+                            <div className="flex gap-0 md:gap-2 w-fit">
                                 <Navigation link={navLink} />
                             </div>
                         </div>
@@ -127,7 +127,7 @@ export default function Index({data}){
                                     {(isSiswa) && (
                                         <>
                                         <div className='absolute top-3 right-2'>
-                                            <Button size={'sm'} auto onPress={()=>{setIsImport(!isImport)}} className='absolute'>
+                                            <Button auto size={"sm"} onPress={()=>{setIsImport(!isImport)}} className='absolute'>
                                             Import Excel
                                             </Button>
                                         </div>

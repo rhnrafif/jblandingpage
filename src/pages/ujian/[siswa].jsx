@@ -81,6 +81,7 @@ export default function HelloScreen({data}) {
                         size={"sm"}
                         auto
                         onClick={handleLogout}
+                        color={"error"}
                         >
                           Log out
                         </Button>
@@ -113,10 +114,10 @@ export default function HelloScreen({data}) {
                                 {(userLink.length != 0) ? (
                                   <>
                                       <h2>Pilih Mata Pelajaran</h2>
-                                      <div className="w-full max-w-[480px] flex flex-wrap gap-2 justify-center">
+                                      <div className="w-full max-w-[480px] flex flex-wrap gap-3 justify-center">
                                         {userLink?.map((e)=>{
                                           return(
-                                            <Link href={e.link_ujian} target="_blank" className="w-fit h-[40px] px-2 bg-sky-700 text-white rounded text-base flex justify-center items-center" key={e.id}>
+                                            <Link href={e.link_ujian} target="_blank" className="w-fit h-[32px] px-2 bg-sky-700 text-white rounded text-base flex justify-center items-center" key={e.id}>
                                               {e.mata_pelajaran}
                                             </Link>
                                           )

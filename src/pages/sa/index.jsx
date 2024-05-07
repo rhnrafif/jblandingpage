@@ -80,27 +80,27 @@ export default function Index({data}){
 
     return(
         <>       
-        <main className='min-w-full min-h-screen bg-slate-100 text-black ' >
+        <main className='min-w-full min-h-screen bg-slate-100 text-black p-4' >
             {(isLoading == false) ? (
                 <>
                     {(isUserLog) ? (
                         <>
-                        <div className="w-full h-fit max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700 lg:py-2">
+                        <div className="w-full h-fit py-2 sm:py-0 max-w-[1180px] flex justify-between items-center mx-auto border-b-2 border-gray-700 lg:py-2">
                             <div className="w-[120px]">
                                 <Image src={'/logo.svg'} width={80} height={80} alt="logo" />
                             </div>
-                            <div className="flex gap-2 w-fit">
+                            <div className="flex gap-0 md:gap-2 w-fit">
                                 <Navigation link={navLink} />
                             </div>
                         </div>
-                    <div className="container relative min-h-screen flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
+                    <div className="container relative min-h-screen w-full flex flex-col items-center gap-5 max-w-[1180px] mx-auto bg-slate-100 mt-5">
                         {(initial) && (
                             <div>
-                                <h1 className="text-2xl">Selamat Datang {userData.data[0].nama_lengkap}, Have a nice day !</h1>
+                                <h1 className="text-lg sm:text-2xl text-center">Selamat Datang {userData.data[0].nama_lengkap}, Have a nice day !</h1>
                             </div>
                         )}                    
-                            <div className="w-full h-full flex gap-4">
-                                <div className="text-black bg-slate-200 w-[40%] h-[280px] shadow-md rounded-md p-3 flex flex-col gap-4">
+                            <div className="w-full h-full flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                <div className="text-black bg-slate-200 w-full sm:w-[40%] h-[280px] shadow-md rounded-md p-3 flex flex-col gap-4">
                                     <h2 className="text-center font-medium text-xl">Pilih Menu Admin </h2>
                                     <div className="flex flex-wrap gap-3 justify-center text-white">
                                         <button className="p-4 w-[175px] h-[80px] bg-sky-600 rounded-md" onClick={()=>{handleMenu("isLookup")}}>
@@ -111,7 +111,7 @@ export default function Index({data}){
                                         </button>
                                     </div>
                                 </div>
-                                <div className=" bg-slate-200 w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center relative">
+                                <div className=" bg-slate-200 w-full sm:w-[60%] min-h-[280px] shadow-md rounded-md p-3 flex justify-center items-center relative">
                                     
                                     {(isKelas) && (
                                         <>

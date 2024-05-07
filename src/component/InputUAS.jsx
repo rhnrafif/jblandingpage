@@ -85,8 +85,8 @@ export default function InputUAS({dataEvent}) {
   return (
     <div className="flex flex-col gap-4 items-center">
         <p className="text-lg font-semibold">Tambah Link UAS</p>
-        <form action="" className="flex flex-col gap-3 items-center" onSubmit={handleSubmit(submitUAS)}>
-            <div className="flex gap-2 items-center justify-between w-full">
+        <form action="" className="w-full flex flex-col gap-1 sm:gap-4 items-center" onSubmit={handleSubmit(submitUAS)}>
+            <div className="w-full flex gap-2 sm:gap-4 items-center justify-center sm:justify-between">
                 
                 <div className="flex flex-col gap-2 items-center">
                     <p>Mata Pelajaran</p>
@@ -104,7 +104,7 @@ export default function InputUAS({dataEvent}) {
                             items={dataEvent.dataMapel}
                         >
                             {(i)=>(
-                                <Dropdown.Item key={i.value}>
+                                <Dropdown.Item className='text-sm sm:text-base' key={i.value}>
                                     {i.value}
                                 </Dropdown.Item>
                             )}
@@ -128,7 +128,7 @@ export default function InputUAS({dataEvent}) {
                             items={dataEvent.dataJurusan}
                         >
                             {(i)=>(
-                                <Dropdown.Item key={i.value}>
+                                <Dropdown.Item className='text-sm sm:text-base' key={i.value}>
                                     {i.value}
                                 </Dropdown.Item>
                             )}
@@ -139,13 +139,13 @@ export default function InputUAS({dataEvent}) {
                 
             </div>
             <div>
-                <Input clearable label="Link" name="link" width="420px" id='inputUAS' required
+                <Input clearable label="Link" name="link" width='320px'  id='inputUAS' required
                 
                 {... register("link")}
                 />
             </div>
             
-            <div>
+            <div className='mt-3'>
                     <Button type="submit" color="primary" auto>
                     Tambah
                 </Button>

@@ -6,7 +6,7 @@ import { poppins } from "../../public/fonts"
 export default function Home() {
   return (
     <>       
-        <main className='min-w-full min-h-screen bg-slate-100 text-black relative flex justify-center items-center' >
+        <main className='min-w-full min-h-screen bg-slate-100 text-black relative flex justify-center items-start' >
           <div className="w-full h-full absolute z-10 bg-[url('/bg.svg')] bg-cover"></div>
                 {/* bg-contain bg-center bg-repeat */}
                <div className={`container relative h-fit w-fit flex gap-5 max-w-[1180px] mx-auto pt-10 lg:pt-5 z-20 ${poppins.className}`}>
