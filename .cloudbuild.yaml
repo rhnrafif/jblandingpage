@@ -1,0 +1,36 @@
+
+# Define the build steps
+steps:
+  # Install dependencies
+  - name: 'node:20-alpine'  # Update the image version if needed
+    entrypoint: 'npm'
+    args: ['install']
+
+  # Build the Docker image
+  - name: 'gcr.io/$PROJECT_ID/jbportalujian'  # Replace with your project ID and service name
+    args: ['build', '-t', './']
+    dir: '.'
+
+  # Push the image to Container Registry
+  - name: 'gcr.io/$PROJECT_ID/jbportalujian:$TAG'  # Replace with your project ID and service name
+    args: ['push', './']
+
+  # Deploy the image to Cloud Run service (with service creation)
+  - name: 'gcloud'
+    args: ['run', 'deploy', 'jbportalujian', 
+           '--image', 'gcr.io/$PROJECT_ID/jbportalujian:$TAG', 
+           '--region', 'asia-southeast1',  # Replace with your region (optional)
+           '--create-service']
+    env:
+      # Replace with your Cloud Build substitution variables
+      - 'PROJECT_ID=$_PROJECT_ID'
+      - 'TAG=$SHORT_SHA'  # Uses the short commit SHA for image tag
+
+  # Deploy the image to Cloud Run service
+  # - name: 'gcloud'
+  #   args: ['run', 'deploy', 'your-service-name', '--image', 'gcr.io/$PROJECT_ID/your-service-name:$TAG', 
+  #          '--region', 'REGION']  # Replace with your service name, region (optional)
+  #   env:
+  #     # Replace with your Cloud Build substitution variables
+  #     - 'PROJECT_ID=$_PROJECT_ID'
+  #     - 'TAG=$SHORT_SHA'  # Uses the short commit SHA for image tag
