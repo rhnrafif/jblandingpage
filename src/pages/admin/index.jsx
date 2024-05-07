@@ -189,19 +189,30 @@ export async function getServerSideProps({ req, res }) {
   const host = req.headers.host;
   const baseURL = `${protocol}://${host}`;
 
-  const [dataMapel, dataJurusan] = await Promise.all([
-    axios.get(`${baseURL}/api/get/datamapel`),
-    axios.get(`${baseURL}/api/get/datajurusan`),
-  ]);
+  try {
+      const [dataMapel, dataJurusan] = await Promise.all([
+        axios.get(`${baseURL}/api/get/datamapel`),
+        axios.get(`${baseURL}/api/get/datajurusan`),
+      ]);
+      const resultData = {
+        dataMapel: dataMapel.data,
+        dataJurusan: dataJurusan.data,
+      };
 
-  const resultData = {
-    dataMapel: dataMapel.data,
-    dataJurusan: dataJurusan.data,
-  };
+      return {
+        props: {
+          data: resultData,
+        },
+      };
+      
+  } catch (error) {
+    console.log(error)
+  }
+
 
   return {
     props: {
-      data: resultData,
+
     },
   };
 }
